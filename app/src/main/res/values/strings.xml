@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Sarrm</string>
+
+    <string name="title_menu_name">설정 이름</string>
+    <string name="title_menu_reply_target">응답 대상</string>
+    <string name="title_menu_time">설정 시간</string>
+    <string name="title_menu_reply_message">응답 메시지</string>
+</resources>
