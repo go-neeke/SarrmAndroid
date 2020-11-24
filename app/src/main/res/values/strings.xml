@@ -1,8 +1,19 @@
 <resources>
     <string name="app_name">Sarrm</string>
 
+    <!-- 메뉴 이름 -->
     <string name="title_menu_name">설정 이름</string>
     <string name="title_menu_reply_target">응답 대상</string>
     <string name="title_menu_time">설정 시간</string>
     <string name="title_menu_reply_message">응답 메시지</string>
+
+
+    <string name="button_text_save">저 장</string>
+
+    <!-- 응답 대상 -->
+    <string-array name="reply_target_array">
+        <item>모든 전화에</item>
+        <item>내 연락처만</item>
+        <item>번호 지정</item>
+    </string-array>
 </resources>
