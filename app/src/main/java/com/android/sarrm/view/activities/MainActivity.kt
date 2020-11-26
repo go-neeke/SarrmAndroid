@@ -16,7 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.android.sarrm.R
 import com.android.sarrm.databinding.*
-import com.android.sarrm.receiver.IncomingCallReceiver
+import com.android.sarrm.receiver.PhoneCallReceiver
 import kotlinx.android.synthetic.main.layout_menu_reply_target.*
 
 
@@ -108,7 +108,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     private fun registerReceiver() {
         this.registerReceiver(
-            IncomingCallReceiver(),
+            PhoneCallReceiver(),
             IntentFilter("android.intent.action.PHONE_STATE")
         )
     }

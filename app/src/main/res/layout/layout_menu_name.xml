@@ -38,7 +38,6 @@
             android:layout_height="wrap_content"
             android:background="@drawable/round_outline"
             android:textAppearance="@android:style/TextAppearance.Material.Widget.EditText"
-            android:padding="4dp"
             android:singleLine="true"/>
     </LinearLayout>
 </layout>

@@ -9,7 +9,7 @@ import android.telecom.TelecomManager
 import android.telephony.TelephonyManager
 import android.util.Log
 import com.android.sarrm.data.db.ReplySettingDatabase
-import com.android.sarrm.listeners.ITelephony
+import com.android.sarrm.watchers.PhoneCallDetector
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -18,8 +18,8 @@ import io.reactivex.schedulers.Schedulers
 /*
 * 수신 전화를 감지하여 응답메시지 전송하는 BroadcastReceiver
 * */
-class IncomingCallReceiver : BroadcastReceiver() {
-    private val LOG_TAG: String = IncomingCallReceiver::class.java.simpleName
+class PhoneCallReceiver : BroadcastReceiver() {
+    private val LOG_TAG: String = PhoneCallReceiver::class.java.simpleName
 
     @SuppressLint("CheckResult")
     override fun onReceive(context: Context, intent: Intent) {
@@ -77,7 +77,7 @@ class IncomingCallReceiver : BroadcastReceiver() {
             val tm = context?.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
             val iTelephony = tm.javaClass.getDeclaredMethod("getITelephony")
             iTelephony.isAccessible = true
-            val telephonyService = iTelephony.invoke(tm) as ITelephony
+            val telephonyService = iTelephony.invoke(tm) as PhoneCallDetector
             telephonyService.endCall()
         }
     }
