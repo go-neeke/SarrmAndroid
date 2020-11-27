@@ -4,12 +4,9 @@ import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.os.Build
-import android.telecom.TelecomManager
 import android.telephony.TelephonyManager
 import android.util.Log
 import com.android.sarrm.data.db.ReplySettingDatabase
-import com.android.sarrm.watchers.PhoneCallDetector
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -70,16 +67,16 @@ class PhoneCallReceiver : BroadcastReceiver() {
 
     @SuppressLint("MissingPermission")
     private fun endCall(context: Context?, number: String?) {
-        if (Build.VERSION.SDK_INT >= 28) {
-            val telecomManager = context?.getSystemService(Context.TELECOM_SERVICE) as TelecomManager
-            telecomManager.endCall()
-        } else {
-            val tm = context?.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-            val iTelephony = tm.javaClass.getDeclaredMethod("getITelephony")
-            iTelephony.isAccessible = true
-            val telephonyService = iTelephony.invoke(tm) as PhoneCallDetector
-            telephonyService.endCall()
-        }
+//        if (Build.VERSION.SDK_INT >= 28) {
+//            val telecomManager = context?.getSystemService(Context.TELECOM_SERVICE) as TelecomManager
+//            telecomManager.endCall()
+//        } else {
+//            val tm = context?.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+//            val iTelephony = tm.javaClass.getDeclaredMethod("getITelephony")
+//            iTelephony.isAccessible = true
+//            val telephonyService = iTelephony.invoke(tm) as PhoneCallDetector
+//            telephonyService.endCall()
+//        }
     }
 
 }

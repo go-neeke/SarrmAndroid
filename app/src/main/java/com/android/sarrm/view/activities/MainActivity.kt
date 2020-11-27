@@ -1,13 +1,15 @@
 package com.android.sarrm.view.activities
 
 import android.Manifest
+import android.app.ActivityManager
+import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -16,11 +18,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.android.sarrm.R
 import com.android.sarrm.databinding.*
-import com.android.sarrm.receiver.PhoneCallReceiver
+import com.android.sarrm.service.PhoneCallService
 import kotlinx.android.synthetic.main.layout_menu_reply_target.*
 
 
 class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
+
+    lateinit var mIntent: Intent
 
     val PERMISSION_REQ_CODE = 1234
     val PERMISSIONS_PHONE_BEFORE_P = arrayOf(
@@ -73,7 +77,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     private fun checkPermissions() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             // broadcastReceiver 등록
-            registerReceiver()
+            startPhoneCallService()
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Build.VERSION.SDK_INT <= Build.VERSION_CODES.O_MR1) {
             if (checkSelfPermission(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_DENIED
                 || checkSelfPermission(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_DENIED
@@ -85,7 +89,7 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
                 checkDrawOverlayPermission()
             else {
                 // broadcastReceiver 등록
-                registerReceiver()
+                startPhoneCallService()
             }
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Build.VERSION.SDK_INT > Build.VERSION_CODES.O_MR1) {
             if (checkSelfPermission(Manifest.permission.ANSWER_PHONE_CALLS) == PackageManager.PERMISSION_DENIED
@@ -100,19 +104,21 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
                 checkDrawOverlayPermission()
             else {
                 // broadcastReceiver 등록
-                registerReceiver()
+                startPhoneCallService()
             }
 
         }
     }
 
-    private fun registerReceiver() {
-        this.registerReceiver(
-            PhoneCallReceiver(),
-            IntentFilter("android.intent.action.PHONE_STATE")
-        )
+    private fun startPhoneCallService() {
+        val serviceClass = PhoneCallService::class.java
+        mIntent = Intent(applicationContext, serviceClass)
+        if (!this.isServiceRunning(serviceClass)) {
+            // App 실행 시 서비스(GpsService) 시작
+            // App 실행 시 foreground 이므로 startService 로 호출
+            startService(mIntent)
+        }
     }
-
 
     @RequiresApi(Build.VERSION_CODES.M)
     fun checkDrawOverlayPermission() {
@@ -128,7 +134,16 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        registerReceiver()
+        startPhoneCallService()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        try {
+            stopService(mIntent)
+        } catch (e: UninitializedPropertyAccessException) {
+            e.printStackTrace()
+        }
     }
 
     override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -137,4 +152,16 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
         val text: String = parent?.getItemAtPosition(position).toString()
     }
+}
+
+fun Context.isServiceRunning(serviceClass: Class<*>): Boolean {
+    val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+
+    for (service in activityManager.getRunningServices(Integer.MAX_VALUE)) {
+        if (serviceClass.name == service.service.className) {
+            Log.e("isServiceRunning", "Service is running")
+            return true
+        }
+    }
+    return false
 }

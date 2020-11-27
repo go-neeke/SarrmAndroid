@@ -21,12 +21,20 @@
             layout="@layout/layout_menu_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="8dp"
             app:titleName="@{titleName}" />
 
         <EditText
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/round_outline" />
+            android:layout_height="@dimen/reply_message_height"
+            android:isScrollContainer="true"
+            android:inputType="textMultiLine"
+            android:background="@drawable/round_outline"
+            android:hint="@string/hint_menu_reply_message"
+            android:textAppearance="@android:style/TextAppearance.Material.Widget.EditText"
+            android:padding="@dimen/common_margin"
+            android:textSize="@dimen/common_text_size"
+            android:cursorVisible="true"
+            android:gravity="top"
+            android:layout_marginTop="@dimen/common_margin"/>
     </LinearLayout>
 </layout>

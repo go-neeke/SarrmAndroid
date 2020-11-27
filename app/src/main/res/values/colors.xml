@@ -6,4 +6,6 @@
 
     <color name="grey">#a4a4a4</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="ic_launcher_background">#B2255A</color>
+    <color name="outline_color">#e2e2e2</color>
 </resources>

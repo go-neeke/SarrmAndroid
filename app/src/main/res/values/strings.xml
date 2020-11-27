@@ -7,6 +7,16 @@
     <string name="title_menu_time">설정 시간</string>
     <string name="title_menu_reply_message">응답 메시지</string>
 
+    <string name="hint_menu_name">설정 이름을 입력해주세요</string>
+    <string name="hint_menu_reply_message">남기실 응답 메시지를 입력해주세요</string>
+
+    <string name="monday">월</string>
+    <string name="tuesday">화</string>
+    <string name="wednesday">수</string>
+    <string name="thursday">목</string>
+    <string name="friday">금</string>
+    <string name="saturday">토</string>
+    <string name="sunday">일</string>
 
     <string name="button_text_save">저 장</string>
 

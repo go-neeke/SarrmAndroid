@@ -39,13 +39,16 @@
         </receiver>
 
         <receiver
-            android:name=".receiver.PhoneCallReceiver"
+            android:name=".receiver.AlarmReceiver"
             android:enabled="true"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.PHONE_STATE"/>
-            </intent-filter>
         </receiver>
+
+        <service
+            android:name=".service.RestartService"
+            android:enabled="true"
+            android:exported="true">
+        </service>
 
         <service
             android:name=".service.PhoneCallService"

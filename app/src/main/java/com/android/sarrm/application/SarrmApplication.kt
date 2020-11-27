@@ -1,4 +1,4 @@
-package com.android.kinpecauto.kinpecdriver.application
+package com.android.sarrm.application
 
 import android.content.Context
 import androidx.multidex.MultiDex

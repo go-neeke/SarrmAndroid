@@ -11,8 +11,9 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center"
-        android:paddingVertical="4dp"
-        android:text="월" />
+        android:paddingVertical="@dimen/common_margin"
+        android:text="@string/monday"
+        android:textSize="@dimen/common_text_size"/>
 
     <include layout="@layout/layout_border" />
 
@@ -21,8 +22,9 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center"
-        android:paddingVertical="4dp"
-        android:text="월" />
+        android:paddingVertical="@dimen/common_margin"
+        android:text="@string/tuesday"
+        android:textSize="@dimen/common_text_size"/>
 
     <include layout="@layout/layout_border" />
 
@@ -31,8 +33,9 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center"
-        android:paddingVertical="4dp"
-        android:text="월" />
+        android:paddingVertical="@dimen/common_margin"
+        android:text="@string/wednesday"
+        android:textSize="@dimen/common_text_size"/>
 
     <include layout="@layout/layout_border" />
 
@@ -41,8 +44,9 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center"
-        android:paddingVertical="4dp"
-        android:text="월" />
+        android:paddingVertical="@dimen/common_margin"
+        android:text="@string/thursday"
+        android:textSize="@dimen/common_text_size"/>
 
     <include layout="@layout/layout_border" />
 
@@ -51,8 +55,9 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center"
-        android:paddingVertical="4dp"
-        android:text="월" />
+        android:paddingVertical="@dimen/common_margin"
+        android:text="@string/friday"
+        android:textSize="@dimen/common_text_size"/>
 
     <include layout="@layout/layout_border" />
 
@@ -61,8 +66,9 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center"
-        android:paddingVertical="4dp"
-        android:text="월" />
+        android:paddingVertical="@dimen/common_margin"
+        android:text="@string/saturday"
+        android:textSize="@dimen/common_text_size"/>
 
     <include layout="@layout/layout_border" />
 
@@ -71,6 +77,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center"
-        android:paddingVertical="4dp"
-        android:text="월" />
+        android:paddingVertical="@dimen/common_margin"
+        android:text="@string/sunday"
+        android:textSize="@dimen/common_text_size"/>
+
 </LinearLayout>

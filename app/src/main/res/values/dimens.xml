@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- bullet.xml -->
+    <dimen name="bullet_width">4dp</dimen>
+    <dimen name="bullet_height">8dp</dimen>
+
+    <!-- divider.xml -->
+    <dimen name="divider_width">1dp</dimen>
+    <dimen name="divider_height">10dp</dimen>
+
+    <!-- round_outline.xml -->
+    <dimen name="outline_stroke_width">1dp</dimen>
+    <dimen name="outline_padding_horizontal">4dp</dimen>
+    <dimen name="outline_padding_vertical">6dp</dimen>
+    <dimen name="outline_radius">7dp</dimen>
+
+    <!-- selector_save_butotn.xml -->
+    <dimen name="save_button_radius">12dp</dimen>
+
+    <dimen name="common_margin">10dp</dimen>
+
+    <dimen name="main_logo_height">100dp</dimen>
+    <dimen name="top_logo_width">90dp</dimen>
+    <dimen name="top_logo_height">30dp</dimen>
+    <dimen name="top_logo_desc_width">200dp</dimen>
+    <dimen name="top_logo_desc_height">20dp</dimen>
+    <dimen name="save_button_padding">48dp</dimen>
+    <dimen name="reply_message_height">100dp</dimen>
+
+    <!-- 폰트 사이즈 -->
+    <dimen name="common_text_size">16sp</dimen>
+    <dimen name="time_text">36sp</dimen>
+
+</resources>

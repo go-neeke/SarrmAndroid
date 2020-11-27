@@ -5,7 +5,6 @@
     tools:context=".view.activities.MainActivity">
 
     <data>
-
         <variable
             name="titleName"
             type="String" />
@@ -23,7 +22,6 @@
             layout="@layout/layout_menu_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
             app:titleName="@{titleName}" />
 
         <include
@@ -31,13 +29,17 @@
             layout="@layout/layout_border"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="10dp" />
+            android:layout_marginHorizontal="@dimen/common_margin" />
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/round_outline"
             android:textAppearance="@android:style/TextAppearance.Material.Widget.EditText"
-            android:singleLine="true"/>
+            android:singleLine="true"
+            android:textSize="@dimen/common_text_size"
+            android:hint="@string/hint_menu_name"
+            android:padding="@dimen/common_margin"
+            android:cursorVisible="true"/>
     </LinearLayout>
 </layout>

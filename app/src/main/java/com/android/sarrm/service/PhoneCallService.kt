@@ -1,7 +1,6 @@
 package com.android.sarrm.service
 
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
@@ -9,19 +8,18 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
-import android.content.pm.PackageManager
-import android.location.LocationManager
 import android.net.Uri
 import android.os.Build
 import android.os.IBinder
 import android.os.Parcel
 import android.os.PowerManager
 import android.provider.Settings
+import android.telephony.PhoneStateListener
 import android.telephony.TelephonyManager
 import android.util.Log
-import androidx.core.app.ActivityCompat
-import com.android.kinpecauto.kinpecdriver.application.SarrmApplication
-import com.android.sarrm.watchers.PhoneCallDetector
+import com.android.sarrm.application.SarrmApplication
+import com.android.sarrm.receiver.AlarmReceiver
+import com.android.sarrm.listener.PhoneCallStateListener
 import java.util.*
 
 
@@ -30,7 +28,7 @@ class PhoneCallService() : Service() {
     override fun onCreate() {
         super.onCreate()
         Log.e(TAG, "onCreate")
-        regsterGpsService()
+        regsterPhoneCallService()
         val timer = Timer()
         timer.schedule(timeTask, 0, 20000)
     }
@@ -55,6 +53,7 @@ class PhoneCallService() : Service() {
         val c: Calendar = Calendar.getInstance()
         c.timeInMillis = System.currentTimeMillis()
         c.add(Calendar.SECOND, 1)
+        val intent = Intent(this, AlarmReceiver::class.java)
         val sender = PendingIntent.getBroadcast(this, 0, intent, 0)
 
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -62,72 +61,18 @@ class PhoneCallService() : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val callDetactor = PhoneCallDetector(this)
-        val tm = context?.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-        getSystemService(Context.LOCATION_SERVICE) as TelephonyService
-        base.GetSystemService(TelephonyService)
-            .Listen(callDetactor, PhoneStateListenerFlags.CallState)
         return START_STICKY
     }
 
-    private fun regsterGpsService() {
-        mLocationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        mLocationListener = MainActivity.SpeedoActionListener()
-        try {
-            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1f, mLocationListener)
-            mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 1f, mLocationListener)
-        } catch (e: SecurityException) {
-            e.printStackTrace()
-        }
+    private fun regsterPhoneCallService() {
+        val callDetactor = PhoneCallStateListener(this)
+        val telephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+        telephonyManager.listen(callDetactor, PhoneStateListener.LISTEN_CALL_STATE);
     }
 
     private var timeTask: TimerTask = object : TimerTask() {
         override fun run() {
             whiteListCheck()
-            if (lat == 0.0) {
-                Log.e("location is 0.0", "lat : ${lat}\nlng : $lng")
-                val location = if (ActivityCompat.checkSelfPermission(applicationContext, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-                    == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(applicationContext, Manifest.permission.ACCESS_FINE_LOCATION)
-                    == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(applicationContext, Manifest.permission.ACCESS_COARSE_LOCATION)
-                    == PackageManager.PERMISSION_GRANTED) {
-                    mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-                } else {
-                    // TODO: Consider calling ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    // public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-                    return
-                }
-                if (location != null) {
-                    Log.e("GpsService", "lat_ : ${location.latitude}\nlng_ : ${location.longitude}")
-                    fetchDriverLocation(
-                        DriverPreferences.getUserId(),
-                        DriverPreferences.getPhoneNumber(),
-                        location.latitude.toString(),
-                        location.longitude.toString()
-                    )
-                } else {
-                    /* Default Lat, Lng */
-                    val lat = 35.183687
-                    val lng = 129.10876190
-                    Log.e("Default position : ", "lat : $lat\nlng : $lng")
-                    fetchDriverLocation(
-                        DriverPreferences.getUserId(),
-                        DriverPreferences.getPhoneNumber(),
-                        lat.toString(),
-                        lng.toString()
-                    )
-                }
-            } else {
-                Log.e("onLocationChanged", "lat : $lat\nlng : $lng")
-                fetchDriverLocation(
-                    DriverPreferences.getUserId(),
-                    DriverPreferences.getPhoneNumber(),
-                    lat.toString(),
-                    lng.toString()
-                )
-            }
         }
     }
 
