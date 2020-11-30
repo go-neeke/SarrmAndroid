@@ -22,9 +22,10 @@ import com.android.sarrm.service.PhoneCallService
 import kotlinx.android.synthetic.main.layout_menu_reply_target.*
 
 
-class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
+class MainActivity : AppCompatActivity()  {
 
-    lateinit var mIntent: Intent
+    private  lateinit var mIntent: Intent
+    private lateinit var binding: ActivityMainBinding
 
     val PERMISSION_REQ_CODE = 1234
     val PERMISSIONS_PHONE_BEFORE_P = arrayOf(
@@ -49,29 +50,10 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // 메뉴 설정
-        val binding: ActivityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        binding.titleMenuName = resources.getString(R.string.title_menu_name)
-        binding.titleMenuReplyTarget =resources.getString(R.string.title_menu_reply_target)
-        binding.titleMenuTime = resources.getString(R.string.title_menu_time)
-        binding.titleMenuReplyMessage = resources.getString(R.string.title_menu_reply_message)
-
-
-        setReplyTargetSpinner()
+        binding = DataBindingUtil.setContentView(this,R.layout.activity_main)
 
         // 퍼미션 체크
         checkPermissions()
-    }
-
-    private fun setReplyTargetSpinner() {
-        val adapter = ArrayAdapter.createFromResource(
-            this,
-            R.array.reply_target_array,
-            android.R.layout.simple_spinner_item
-        )
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinnerReplyTarget.adapter = adapter
-        spinnerReplyTarget.onItemSelectedListener = this
     }
 
     private fun checkPermissions() {
@@ -144,13 +126,6 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         } catch (e: UninitializedPropertyAccessException) {
             e.printStackTrace()
         }
-    }
-
-    override fun onNothingSelected(parent: AdapterView<*>?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        val text: String = parent?.getItemAtPosition(position).toString()
     }
 }
 

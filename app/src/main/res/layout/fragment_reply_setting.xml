@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".view.fragments.ReplySettingFragment">
+
+    <data>
+        <variable
+            name="titleMenuName"
+            type="String" />
+
+        <variable
+            name="titleMenuReplyTarget"
+            type="String" />
+
+        <variable
+            name="titleMenuTime"
+            type="String" />
+
+        <variable
+            name="titleMenuReplyMessage"
+            type="String" />
+
+        <variable
+            name="replySettingViewModel"
+            type="com.android.sarrm.view.models.ReplySettingViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:padding="@dimen/common_margin">
+
+        <!-- 로고 -->
+        <ImageView
+            android:id="@+id/textLogo"
+            android:layout_width="@dimen/top_logo_width"
+            android:layout_height="@dimen/top_logo_height"
+            android:src="@drawable/text_logo_sarrm"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- 로고 description -->
+        <ImageView
+            android:id="@+id/textDescription"
+            android:layout_width="@dimen/top_logo_desc_width"
+            android:layout_height="@dimen/top_logo_desc_height"
+            android:src="@drawable/description_sarrm"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textLogo" />
+
+        <!-- 메뉴들 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/common_margin"
+            android:background="@drawable/round_outline"
+            android:orientation="vertical"
+            android:padding='@dimen/common_margin'
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textDescription">
+
+            <!-- 설정 이름 -->
+            <include
+                layout="@layout/layout_menu_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:titleName="@{titleMenuName}"
+                app:replySettingViewModel="@{replySettingViewModel}"/>
+
+            <!-- 응답 대상 -->
+            <include
+                layout="@layout/layout_menu_reply_target"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:titleName="@{titleMenuReplyTarget}"
+                app:replySettingViewModel="@{replySettingViewModel}"
+                android:layout_marginVertical="@dimen/common_margin"/>
+
+            <!-- 설정 시간 -->
+            <include
+                layout="@layout/layout_menu_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:titleName="@{titleMenuTime}"
+                app:replySettingViewModel="@{replySettingViewModel}"
+                android:layout_marginVertical="@dimen/common_margin"/>
+
+            <!-- 응답 메시지 -->
+            <include
+                layout="@layout/layout_menu_reply_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:titleName="@{titleMenuReplyMessage}"
+                app:replySettingViewModel="@{replySettingViewModel}"/>
+        </LinearLayout>
+
+        <!-- 저장 버튼 -->
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_save_button"
+            android:paddingHorizontal="@dimen/save_button_padding"
+            android:text="@string/button_text_save"
+            android:textColor="@color/white"
+            android:onClick="@{() -> replySettingViewModel.saveReplySetting()}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

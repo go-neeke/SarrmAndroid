@@ -1,25 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal"
-    android:gravity="center">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="20"
-        android:textSize="@dimen/time_text"/>
+    <data>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=":"
-        android:textSize="@dimen/time_text"/>
+        <variable
+            name="replySettingViewModel"
+            type="com.android.sarrm.view.models.ReplySettingViewModel" />
+    </data>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="20"
-        android:textSize="@dimen/time_text"/>
-</LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <!--        <TextView-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:text="20"-->
+        <!--            android:textSize="@dimen/time_text" />-->
+
+        <!--        <TextView-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:text=":"-->
+        <!--            android:textSize="@dimen/time_text" />-->
+
+        <!--        <TextView-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:text="20"-->
+        <!--            android:textSize="@dimen/time_text" />-->
+        <com.android.sarrm.view.customviews.MaterialNumberPicker
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:value="@={replySettingViewModel.hour}"
+            app:mnpEditable="false"
+            app:mnpMaxValue="24"
+            app:mnpMinValue="1"
+            app:mnpSeparatorColor="@color/colorAccent"
+            app:mnpTextColor="@color/colorPrimary"
+            app:mnpTextSize="16sp"
+            app:mnpTextStyle="bold"
+            app:mnpValue="10"
+            app:mnpWrapped="false" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/common_margin"
+            android:text=":"
+            android:textSize="@dimen/time_text" />
+
+        <com.android.sarrm.view.customviews.MaterialNumberPicker
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:value="@={replySettingViewModel.minute}"
+            app:mnpEditable="false"
+            app:mnpMaxValue="59"
+            app:mnpMinValue="0"
+            app:mnpSeparatorColor="@color/colorAccent"
+            app:mnpTextColor="@color/colorPrimary"
+            app:mnpTextSize="16sp"
+            app:mnpTextStyle="bold"
+            app:mnpValue="10"
+            app:mnpWrapped="false" />
+    </LinearLayout>
+</layout>

@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import androidx.annotation.RequiresApi
-import org.jetbrains.anko.toast
 
 class RestartService : Service() {
 
@@ -15,7 +14,7 @@ class RestartService : Service() {
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        toast("Start Restart Service1")
+//        toast("Start Restart Service1")
         // 실제 서비스는 startService로 실행
         startService(Intent(this, PhoneCallService::class.java))
         stopSelf()

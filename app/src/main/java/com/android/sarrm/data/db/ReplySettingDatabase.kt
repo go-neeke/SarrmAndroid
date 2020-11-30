@@ -8,8 +8,7 @@ import androidx.room.TypeConverters
 import com.android.sarrm.data.models.ReplySetting
 import com.android.sarrm.utils.AppConstants.Companion.REPLY_SETTING_DATABASE
 
-@Database(entities = [ReplySetting::class], version = 1)
-@TypeConverters(ReplySetting::class)
+@Database(entities = [ReplySetting::class], version = 1, exportSchema = false)
 abstract class ReplySettingDatabase : RoomDatabase() {
 
     abstract val dao: ReplySettingDatabaseDao

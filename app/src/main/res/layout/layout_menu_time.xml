@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".view.activities.MainActivity">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
         <variable
             name="titleName"
             type="String" />
+        <variable
+            name="replySettingViewModel"
+            type="com.android.sarrm.view.models.ReplySettingViewModel" />
     </data>
 
     <LinearLayout
@@ -23,16 +25,29 @@
             android:layout_height="wrap_content"
             app:titleName="@{titleName}" />
 
-        <include
-            layout="@layout/layout_setting_date"
+<!--        <include-->
+<!--            layout="@layout/layout_setting_date"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginVertical="@dimen/common_margin"-->
+<!--            app:replySettingViewModel="@{replySettingViewModel}"/>-->
+
+        <Spinner
+            android:id="@+id/spinnerRepeatTime"
+            style="@android:style/Widget.Spinner.DropDown"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/common_margin"/>
+            android:background="@drawable/round_outline"
+            android:entries="@array/repeat_time_array"
+            android:paddingVertical="@dimen/common_margin"
+            android:textAppearance="@android:style/TextAppearance.Material.Widget.EditText"
+            tools:setOnItemSelectedListener="@{replySettingViewModel.onSelectedRepeatTimeListener}" />
 
         <include
             layout="@layout/layout_setting_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/common_margin"/>
+            android:layout_marginVertical="@dimen/common_margin"
+            app:replySettingViewModel="@{replySettingViewModel}"/>
     </LinearLayout>
 </layout>

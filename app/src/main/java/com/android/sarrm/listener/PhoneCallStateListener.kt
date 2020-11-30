@@ -28,14 +28,14 @@ class PhoneCallStateListener(private val context: Context) : PhoneStateListener(
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
                         if (it != null) {
-                            val matches = it.map { sp ->
-                                sp.regex
-                            }
-                                .filter { reg -> incomingNumber.matches(reg) }
-
-                            if (matches.count() > 0) {
-                                endCall(incomingNumber)
-                            }
+//                            val matches = it.map { sp ->
+//                                sp.regex
+//                            }
+//                                .filter { reg -> incomingNumber.matches(reg) }
+//
+//                            if (matches.count() > 0) {
+//                                endCall(incomingNumber)
+//                            }
                         }
                     }, { error ->
                     })

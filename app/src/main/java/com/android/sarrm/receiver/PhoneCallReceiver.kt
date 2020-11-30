@@ -48,15 +48,15 @@ class PhoneCallReceiver : BroadcastReceiver() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     if (it != null) {
-                        val matches = it.map { sp ->
-                            sp.regex
-                        }
-                            .filter { reg -> phoneNumber.matches(reg) }
-
-                        Log.i(LOG_TAG, "Matches $matches")
-                        if (matches.count() > 0) {
-                            endCall(context, phoneNumber)
-                        }
+//                        val matches = it.map { sp ->
+//                            sp.regex
+//                        }
+//                            .filter { reg -> phoneNumber.matches(reg) }
+//
+//                        Log.i(LOG_TAG, "Matches $matches")
+//                        if (matches.count() > 0) {
+//                            endCall(context, phoneNumber)
+//                        }
                     }
                 }, { error ->
                     Log.i(LOG_TAG, "Not able to fetch data\n$error")

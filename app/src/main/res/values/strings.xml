@@ -26,4 +26,11 @@
         <item>내 연락처만</item>
         <item>번호 지정</item>
     </string-array>
+
+    <!-- 반복 설정 -->
+    <string-array name="repeat_time_array">
+        <item>주중에만</item>
+        <item>주말에만</item>
+        <item>특정 요일 지정</item>
+    </string-array>
 </resources>
