@@ -9,6 +9,8 @@
     <dimen name="divider_width">1dp</dimen>
     <dimen name="divider_height">10dp</dimen>
 
+    <dimen name="time_picker_height">140dp</dimen>
+
     <!-- round_outline.xml -->
     <dimen name="outline_stroke_width">1dp</dimen>
     <dimen name="outline_padding_horizontal">4dp</dimen>
@@ -18,6 +20,7 @@
     <!-- selector_save_butotn.xml -->
     <dimen name="save_button_radius">12dp</dimen>
 
+    <dimen name="header_margin">16dp</dimen>
     <dimen name="common_margin">10dp</dimen>
 
     <dimen name="main_logo_height">100dp</dimen>

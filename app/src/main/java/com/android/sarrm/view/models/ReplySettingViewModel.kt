@@ -14,10 +14,14 @@ class ReplySettingViewModel(private val dataSource: ReplySettingDatabaseDao) : V
     // Two-way databinding, exposing MutableLiveData
     val name = MutableLiveData<String>()
     val replyTarget = MutableLiveData<String>()
+    val phoneNumber = MutableLiveData<String>()
+    val repeatType = MutableLiveData<String>()
     val date = MutableLiveData<String>()
     val hour = MutableLiveData<Int>()
     val minute = MutableLiveData<Int>()
     val message = MutableLiveData<String>()
+    val isSelectedPhoneNumber = MutableLiveData<Boolean>()
+    val isSelectedRepeatSpecific = MutableLiveData<Boolean>()
 
     val onSelectedReplyTargetListener = object : AdapterView.OnItemSelectedListener {
         override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -25,15 +29,17 @@ class ReplySettingViewModel(private val dataSource: ReplySettingDatabaseDao) : V
 
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
             replyTarget.value = parent?.getItemAtPosition(position) as String
+            isSelectedPhoneNumber.value = position == 2
         }
     }
 
-    val onSelectedRepeatTimeListener = object : AdapterView.OnItemSelectedListener {
+    val onSelectedRepeatTypeListener = object : AdapterView.OnItemSelectedListener {
         override fun onNothingSelected(parent: AdapterView<*>?) {
         }
 
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-            replyTarget.value = parent?.getItemAtPosition(position) as String
+            repeatType.value = parent?.getItemAtPosition(position) as String
+            isSelectedRepeatSpecific.value = position == 2
         }
     }
 

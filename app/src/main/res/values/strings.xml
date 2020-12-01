@@ -4,11 +4,12 @@
     <!-- 메뉴 이름 -->
     <string name="title_menu_name">설정 이름</string>
     <string name="title_menu_reply_target">응답 대상</string>
-    <string name="title_menu_time">설정 시간</string>
+    <string name="title_menu_time">날짜 및 시간 설정</string>
     <string name="title_menu_reply_message">응답 메시지</string>
 
     <string name="hint_menu_name">설정 이름을 입력해주세요</string>
     <string name="hint_menu_reply_message">남기실 응답 메시지를 입력해주세요</string>
+    <string name="hint_menu_phoneNumber">핸드폰 번호를 입력해주세요</string>
 
     <string name="monday">월</string>
     <string name="tuesday">화</string>
@@ -28,7 +29,7 @@
     </string-array>
 
     <!-- 반복 설정 -->
-    <string-array name="repeat_time_array">
+    <string-array name="repeat_type_array">
         <item>주중에만</item>
         <item>주말에만</item>
         <item>특정 요일 지정</item>

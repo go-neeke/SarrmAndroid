@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="android.view.View"/>
 
         <variable
             name="titleName"
@@ -18,33 +19,59 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:orientation="horizontal">
 
-        <!-- 타이틀 -->
-        <include
-            android:id="@+id/layoutTitle"
-            layout="@layout/layout_menu_title"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:titleName="@{titleName}" />
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingVertical="@dimen/common_margin">
+            <!-- 타이틀 -->
+            <include
+                android:id="@+id/layoutTitle"
+                layout="@layout/layout_menu_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:titleName="@{titleName}" />
 
-        <include
-            android:id="@+id/layoutBorder"
-            layout="@layout/layout_border"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/common_margin" />
+            <include
+                android:id="@+id/layoutBorder"
+                layout="@layout/layout_border"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/common_margin" />
+        </LinearLayout>
 
-        <Spinner
-            android:id="@+id/spinnerReplyTarget"
-            style="@android:style/Widget.Spinner.DropDown"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/round_outline"
-            android:entries="@array/reply_target_array"
-            android:paddingVertical="@dimen/common_margin"
-            android:textAppearance="@android:style/TextAppearance.Material.Widget.EditText"
-            tools:setOnItemSelectedListener="@{replySettingViewModel.onSelectedReplyTargetListener}" />
+            android:orientation="vertical">
+
+            <Spinner
+                android:id="@+id/spinnerReplyTarget"
+                style="@android:style/Widget.Spinner.DropDown"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/round_outline"
+                android:entries="@array/reply_target_array"
+                android:paddingVertical="@dimen/common_margin"
+                android:textAppearance="@android:style/TextAppearance.Material.Widget.EditText"
+                tools:setOnItemSelectedListener="@{replySettingViewModel.onSelectedReplyTargetListener}" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/round_outline"
+                android:cursorVisible="true"
+                android:hint="@string/hint_menu_phoneNumber"
+                android:padding="@dimen/common_margin"
+                android:singleLine="true"
+                android:layout_marginTop="@dimen/common_margin"
+                android:text="@={replySettingViewModel.phoneNumber}"
+                android:textAppearance="@android:style/TextAppearance.Material.Widget.EditText"
+                android:textSize="@dimen/common_text_size"
+                android:visibility="@{replySettingViewModel.isSelectedPhoneNumber ? View.VISIBLE : View.GONE}" />
+        </LinearLayout>
     </LinearLayout>
 </layout>

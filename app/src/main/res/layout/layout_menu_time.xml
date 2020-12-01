@@ -4,9 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="android.view.View"/>
         <variable
             name="titleName"
             type="String" />
+
         <variable
             name="replySettingViewModel"
             type="com.android.sarrm.view.models.ReplySettingViewModel" />
@@ -25,29 +27,31 @@
             android:layout_height="wrap_content"
             app:titleName="@{titleName}" />
 
-<!--        <include-->
-<!--            layout="@layout/layout_setting_date"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginVertical="@dimen/common_margin"-->
-<!--            app:replySettingViewModel="@{replySettingViewModel}"/>-->
 
         <Spinner
-            android:id="@+id/spinnerRepeatTime"
+            android:id="@+id/spinnerRepeatType"
             style="@android:style/Widget.Spinner.DropDown"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/round_outline"
-            android:entries="@array/repeat_time_array"
+            android:entries="@array/repeat_type_array"
+            android:layout_marginTop="@dimen/common_margin"
             android:paddingVertical="@dimen/common_margin"
             android:textAppearance="@android:style/TextAppearance.Material.Widget.EditText"
-            tools:setOnItemSelectedListener="@{replySettingViewModel.onSelectedRepeatTimeListener}" />
+            tools:setOnItemSelectedListener="@{replySettingViewModel.onSelectedRepeatTypeListener}" />
+
+        <include
+            layout="@layout/layout_setting_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/common_margin"
+            app:replySettingViewModel="@{replySettingViewModel}"
+            android:visibility="@{replySettingViewModel.isSelectedRepeatSpecific ? View.VISIBLE : View.GONE}" />
 
         <include
             layout="@layout/layout_setting_time"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/common_margin"
-            app:replySettingViewModel="@{replySettingViewModel}"/>
+            android:layout_height="@dimen/time_picker_height"
+            app:replySettingViewModel="@{replySettingViewModel}" />
     </LinearLayout>
 </layout>

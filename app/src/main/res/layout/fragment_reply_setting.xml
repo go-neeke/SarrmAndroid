@@ -5,6 +5,7 @@
     tools:context=".view.fragments.ReplySettingFragment">
 
     <data>
+
         <variable
             name="titleMenuName"
             type="String" />
@@ -26,11 +27,13 @@
             type="com.android.sarrm.view.models.ReplySettingViewModel" />
     </data>
 
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"
         android:padding="@dimen/common_margin">
+
 
         <!-- 로고 -->
         <ImageView
@@ -50,62 +53,75 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textLogo" />
 
-        <!-- 메뉴들 -->
-        <LinearLayout
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/common_margin"
-            android:background="@drawable/round_outline"
-            android:orientation="vertical"
-            android:padding='@dimen/common_margin'
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/header_margin"
+            android:fillViewport="true"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textDescription">
 
-            <!-- 설정 이름 -->
-            <include
-                layout="@layout/layout_menu_name"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:titleName="@{titleMenuName}"
-                app:replySettingViewModel="@{replySettingViewModel}"/>
+                android:layout_height="match_parent"
+                android:isScrollContainer="true">
+                <!-- 메뉴들 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/common_margin"
+                    android:background="@drawable/round_outline"
+                    android:orientation="vertical"
+                    android:padding='@dimen/common_margin'>
 
-            <!-- 응답 대상 -->
-            <include
-                layout="@layout/layout_menu_reply_target"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:titleName="@{titleMenuReplyTarget}"
-                app:replySettingViewModel="@{replySettingViewModel}"
-                android:layout_marginVertical="@dimen/common_margin"/>
+                    <!-- 설정 이름 -->
+                    <include
+                        layout="@layout/layout_menu_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:replySettingViewModel="@{replySettingViewModel}"
+                        app:titleName="@{titleMenuName}" />
 
-            <!-- 설정 시간 -->
-            <include
-                layout="@layout/layout_menu_time"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:titleName="@{titleMenuTime}"
-                app:replySettingViewModel="@{replySettingViewModel}"
-                android:layout_marginVertical="@dimen/common_margin"/>
+                    <!-- 응답 대상 -->
+                    <include
+                        layout="@layout/layout_menu_reply_target"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="@dimen/common_margin"
+                        app:replySettingViewModel="@{replySettingViewModel}"
+                        app:titleName="@{titleMenuReplyTarget}" />
 
-            <!-- 응답 메시지 -->
-            <include
-                layout="@layout/layout_menu_reply_message"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:titleName="@{titleMenuReplyMessage}"
-                app:replySettingViewModel="@{replySettingViewModel}"/>
-        </LinearLayout>
+                    <!-- 설정 시간 -->
+                    <include
+                        layout="@layout/layout_menu_time"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="@dimen/common_margin"
+                        app:replySettingViewModel="@{replySettingViewModel}"
+                        app:titleName="@{titleMenuTime}" />
 
-        <!-- 저장 버튼 -->
+                    <!-- 응답 메시지 -->
+                    <include
+                        layout="@layout/layout_menu_reply_message"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:replySettingViewModel="@{replySettingViewModel}"
+                        app:titleName="@{titleMenuReplyMessage}" />
+                </LinearLayout>
+                <!-- 저장 버튼 -->
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/selector_save_button"
+            android:onClick="@{() -> replySettingViewModel.saveReplySetting()}"
             android:paddingHorizontal="@dimen/save_button_padding"
             android:text="@string/button_text_save"
             android:textColor="@color/white"
-            android:onClick="@{() -> replySettingViewModel.saveReplySetting()}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </layout>
