@@ -3,9 +3,11 @@ package com.android.sarrm.view.models
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
+import androidx.databinding.InverseBindingListener
 import androidx.lifecycle.*
 import com.android.sarrm.data.db.ReplySettingDatabaseDao
 import com.android.sarrm.data.models.ReplySetting
+import com.google.android.material.chip.ChipGroup
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -22,6 +24,7 @@ class ReplySettingViewModel(private val dataSource: ReplySettingDatabaseDao) : V
     val message = MutableLiveData<String>()
     val isSelectedPhoneNumber = MutableLiveData<Boolean>()
     val isSelectedRepeatSpecific = MutableLiveData<Boolean>()
+    val sfsfsf =MutableLiveData<Int>()
 
     val onSelectedReplyTargetListener = object : AdapterView.OnItemSelectedListener {
         override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -43,6 +46,17 @@ class ReplySettingViewModel(private val dataSource: ReplySettingDatabaseDao) : V
         }
     }
 
+    val onSelectedDayListener =
+        ChipGroup.OnCheckedChangeListener { group, checkedId -> sfsfsf.value=checkedId }
+//        ChipGroup.OnCheckedChangeListener { group, checkedId -> Log.d("AGA", checkedId.toString()) }
+//    val onSelectedDayddListener = InverseBindingListener { Log.d("AGA", "fdfdfd") }
+
+    fun onStyleChange(chipGroup: ChipGroup, id: Int) {
+//        Log.e(Thread.currentThread().name, "style_change: $id")
+        sfsfsf.value=id
+//        onOrderChange?.invoke(id)
+    }
+
     fun saveReplySetting() {
         val currentName = name.value.toString()
         val currentReplyTarget = replyTarget.value.toString()
@@ -50,7 +64,7 @@ class ReplySettingViewModel(private val dataSource: ReplySettingDatabaseDao) : V
         val currentHour = hour.value.toString()
         val currentMinute = minute.value.toString()
         val currentMessage = message.value.toString()
-
+        val currentsfsfsf = sfsfsf.value.toString()
 
         Log.d("Viewmodel", currentName)
         Log.d("Viewmodel", currentReplyTarget)
@@ -58,6 +72,7 @@ class ReplySettingViewModel(private val dataSource: ReplySettingDatabaseDao) : V
         Log.d("Viewmodel", currentHour)
         Log.d("Viewmodel", currentMinute)
         Log.d("Viewmodel", currentMessage)
+        Log.d("Viewmodel", currentsfsfsf)
 //        if (currentName.isEmpty() || currentLocation.isEmpty()) {
 //            _snackbarText.value = "Please fill out Name and Location"
 //            return

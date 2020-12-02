@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <import type="android.view.View"/>
+
+        <import type="android.view.View" />
+
         <variable
             name="titleName"
             type="String" />
@@ -19,39 +21,46 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- 타이틀 -->
-        <include
-            android:id="@+id/layoutTitle"
-            layout="@layout/layout_menu_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:titleName="@{titleName}" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingVertical="@dimen/common_margin">
+                <!-- 타이틀 -->
+                <include
+                    android:id="@+id/layoutTitle"
+                    layout="@layout/layout_menu_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:titleName="@{titleName}" />
+
+                <include
+                    android:id="@+id/layoutBorder"
+                    layout="@layout/layout_border"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/common_margin" />
+            </LinearLayout>
 
 
-        <Spinner
-            android:id="@+id/spinnerRepeatType"
-            style="@android:style/Widget.Spinner.DropDown"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/round_outline"
-            android:entries="@array/repeat_type_array"
-            android:layout_marginTop="@dimen/common_margin"
-            android:paddingVertical="@dimen/common_margin"
-            android:textAppearance="@android:style/TextAppearance.Material.Widget.EditText"
-            tools:setOnItemSelectedListener="@{replySettingViewModel.onSelectedRepeatTypeListener}" />
 
-        <include
-            layout="@layout/layout_setting_date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/common_margin"
-            app:replySettingViewModel="@{replySettingViewModel}"
-            android:visibility="@{replySettingViewModel.isSelectedRepeatSpecific ? View.VISIBLE : View.GONE}" />
+        <!-- 요일 설정 -->
+        <!-- 반복설정을 특정요일로 선택했을 때만 요일 지정하는 view가 보임 -->
+<!--        <include-->
+<!--            layout="@layout/layout_setting_date"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="@dimen/common_margin"-->
+<!--            android:visibility="@{replySettingViewModel.isSelectedRepeatSpecific ? View.VISIBLE : View.GONE}"-->
+<!--            app:replySettingViewModel="@{replySettingViewModel}" />-->
 
+        <!-- 시간 설정 -->
         <include
             layout="@layout/layout_setting_time"
             android:layout_width="match_parent"
             android:layout_height="@dimen/time_picker_height"
             app:replySettingViewModel="@{replySettingViewModel}" />
+
     </LinearLayout>
 </layout>

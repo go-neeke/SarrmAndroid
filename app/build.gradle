@@ -75,6 +75,7 @@ dependencies {
     implementation "androidx.room:room-ktx:$version_room"
     kapt "androidx.room:room-compiler:$version_room"
 
+    // ReactiveX
     implementation "io.reactivex.rxjava2:rxjava:2.2.9"
     implementation "io.reactivex.rxjava2:rxandroid:2.0.2"
 
@@ -82,6 +83,18 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version_coroutine"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version_coroutine"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version_coroutine"
+
+    // Mterial ui
+    implementation "com.google.android.material:material:1.2.1"
+
+    // Date Picker
+    implementation 'com.github.niwattep:material-slide-date-picker:v2.0.0'
+
+    // Time Picker
+    implementation 'com.akexorcist:snap-time-picker:1.0.0'
+
+    //Logger
+    implementation 'com.orhanobut:logger:2.2.0'
 
     // Testing
     testImplementation 'junit:junit:4.13.1'

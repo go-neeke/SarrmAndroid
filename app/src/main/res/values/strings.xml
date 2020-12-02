@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">Sarrm</string>
 
+    <string name="permission_not_granted">"Permission not granted"</string>
+
+
     <!-- 메뉴 이름 -->
     <string name="title_menu_name">설정 이름</string>
     <string name="title_menu_reply_target">응답 대상</string>

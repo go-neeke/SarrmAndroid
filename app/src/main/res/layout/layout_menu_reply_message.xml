@@ -24,6 +24,7 @@
             android:layout_height="wrap_content"
             app:titleName="@{titleName}" />
 
+        <!-- 응답 메시지 입력 -->
         <EditText
             android:layout_width="match_parent"
             android:layout_height="@dimen/reply_message_height"

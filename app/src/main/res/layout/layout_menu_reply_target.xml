@@ -48,6 +48,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <!-- 응답 대상 선택 -->
             <Spinner
                 android:id="@+id/spinnerReplyTarget"
                 style="@android:style/Widget.Spinner.DropDown"
@@ -59,6 +60,7 @@
                 android:textAppearance="@android:style/TextAppearance.Material.Widget.EditText"
                 tools:setOnItemSelectedListener="@{replySettingViewModel.onSelectedReplyTargetListener}" />
 
+            <!-- 응답대상을 번호지정으로 선택했을 때만 폰번호 입력란이 보임 -->
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

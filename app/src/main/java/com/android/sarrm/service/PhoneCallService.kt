@@ -65,6 +65,7 @@ class PhoneCallService() : Service() {
     }
 
     private fun regsterPhoneCallService() {
+        Log.e(TAG, "regsterPhoneCallService")
         val callDetactor = PhoneCallStateListener(this)
         val telephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
         telephonyManager.listen(callDetactor, PhoneStateListener.LISTEN_CALL_STATE);

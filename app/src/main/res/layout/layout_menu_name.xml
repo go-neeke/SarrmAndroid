@@ -32,6 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/common_margin" />
 
+        <!-- 설정 이름 입력 -->
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
