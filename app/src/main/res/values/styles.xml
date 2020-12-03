@@ -23,8 +23,8 @@
         <item name="cornerSizeTopRight">18dp</item>
         <item name="cornerSizeBottomRight">18dp</item>
     </style>
-    <style name="CustomShapeAppearanceOverlay22.Button" parent="">
 
+    <style name="CustomShapeAppearanceOverlay22.Button" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSizeTopLeft">0dp</item>
         <item name="cornerSizeBottomLeft">0dp</item>
@@ -33,5 +33,9 @@
         <item name="cornerFamilyBottomLeft">cut</item>
         <item name="cornerSizeTopRight">18dp</item>
         <item name="cornerSizeBottomRight">18dp</item>
+    </style>
+
+    <style name="MyDatePicker">
+        <item name="android:timePickerMode">spinner</item>
     </style>
 </resources>

@@ -11,7 +11,9 @@ import android.widget.ArrayAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.navigation.fragment.findNavController
+import androidx.savedstate.SavedStateRegistryOwner
 import com.android.sarrm.R
 import com.android.sarrm.data.db.ReplySettingDatabase
 import com.android.sarrm.databinding.FragmentReplySettingBinding
@@ -25,7 +27,8 @@ class ReplySettingFragment : Fragment() {
     private val replySettingViewModel by viewModels<ReplySettingViewModel> {
         ViewModelFactory(
             ReplySettingDatabase.getInstance(this.requireContext()).dao,
-            this
+            this,
+            requireActivity()
         )
     }
 
@@ -54,5 +57,11 @@ class ReplySettingFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+    }
+
+    fun Fragment.getViewModelStoreOwner(): SavedStateRegistryOwner = try {
+        requireActivity()
+    } catch (e: IllegalStateException) {
+        this
     }
 }

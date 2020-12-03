@@ -24,6 +24,14 @@
 
     <string name="button_text_save">저 장</string>
 
+    <!-- Date Time -->
+    <string name="setDate">날짜</string>
+    <string name="setTime">시간</string>
+    <string name="set">설정</string>
+    <string name="edit">수정</string>
+    <string name="save">저장</string>
+    <string name="cancel">취소</string>
+
     <!-- 응답 대상 -->
     <string-array name="reply_target_array">
         <item>모든 전화에</item>

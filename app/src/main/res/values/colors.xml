@@ -3,7 +3,8 @@
     <color name="colorPrimary">#cf232a</color>
     <color name="colorPrimaryDark">#b2255a</color>
     <color name="colorAccent">#a8266c</color>
-
+    <color name="colorTransparent">@android:color/transparent</color>
+    <color name="colorBlack">#030303</color>
     <color name="grey">#a4a4a4</color>
     <color name="white">#FFFFFFFF</color>
     <color name="ic_launcher_background">#B2255A</color>

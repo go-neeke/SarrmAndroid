@@ -1,5 +1,6 @@
 package com.android.sarrm.view.factories
 
+import android.app.Activity
 import android.os.Bundle
 import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
@@ -11,6 +12,7 @@ import com.android.sarrm.view.models.ReplySettingViewModel
 class ViewModelFactory(
     private val datasource: ReplySettingDatabaseDao,
     owner: SavedStateRegistryOwner,
+    private val activity: Activity,
     defaultArgs: Bundle? = null
 ) : AbstractSavedStateViewModelFactory(owner, defaultArgs) {
     override fun <T : ViewModel> create(
@@ -20,7 +22,7 @@ class ViewModelFactory(
     ) = with(modelClass) {
         when {
             isAssignableFrom(ReplySettingViewModel::class.java) ->
-                ReplySettingViewModel(datasource)
+                ReplySettingViewModel(activity, datasource)
             else ->
                 throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
         }

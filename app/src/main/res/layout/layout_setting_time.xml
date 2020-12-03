@@ -25,6 +25,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="2020.12.03\n05:00"
+                android:onClick="@{() -> replySettingViewModel.openDateTimePicker()}"
                 app:shapeAppearanceOverlay="@style/CustomShapeAppearanceOverlay.Button" />
 
             <com.google.android.material.button.MaterialButton
