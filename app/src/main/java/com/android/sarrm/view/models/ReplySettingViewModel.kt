@@ -13,8 +13,10 @@ import androidx.savedstate.SavedStateRegistryOwner
 import com.android.sarrm.application.SarrmApplication
 import com.android.sarrm.data.db.ReplySettingDatabaseDao
 import com.android.sarrm.data.models.ReplySetting
+import com.android.sarrm.utils.DateUtils
 import com.android.sarrm.view.customviews.DateTimePicker
 import com.google.android.material.chip.ChipGroup
+import com.orhanobut.logger.Logger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -26,13 +28,20 @@ class ReplySettingViewModel(private val activity: Activity, private val dataSour
     val replyTarget = MutableLiveData<String>()
     val phoneNumber = MutableLiveData<String>()
     val repeatType = MutableLiveData<String>()
-    val date = MutableLiveData<String>()
-    val hour = MutableLiveData<Int>()
-    val minute = MutableLiveData<Int>()
     val message = MutableLiveData<String>()
     val isSelectedPhoneNumber = MutableLiveData<Boolean>()
     val isSelectedRepeatSpecific = MutableLiveData<Boolean>()
     val sfsfsf =MutableLiveData<Int>()
+
+    var startDate = MutableLiveData<Date>()
+    fun getStartDateString(): String {
+        return DateUtils.toSimpleString(startDate.value!!)
+    }
+
+    var endDate = MutableLiveData<Date>()
+    fun getEndDateString(): String {
+        return DateUtils.toSimpleString(endDate.value!!)
+    }
 
     val onSelectedReplyTargetListener = object : AdapterView.OnItemSelectedListener {
         override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -65,7 +74,7 @@ class ReplySettingViewModel(private val activity: Activity, private val dataSour
 //        onOrderChange?.invoke(id)
     }
 
-    fun openDateTimePicker() {
+    fun openDateTimePicker(type:Int) {
         DateTimePicker(activity, object : DateTimePicker.ICustomDateTimeListener {
             @SuppressLint("BinaryOperationInTimber")
             override fun onSet(
@@ -85,6 +94,11 @@ class ReplySettingViewModel(private val activity: Activity, private val dataSour
                 sec: Int,
                 AM_PM: String
             ) {
+                if (type == 1) startDate.value = dateSelected else endDate.value = dateSelected
+
+
+                Logger.d("startDate %s",startDate.toString())
+                Logger.d("endDate %s",endDate.toString())
                 //Get any time of date and time data here and process further...
             }
 
@@ -105,17 +119,17 @@ class ReplySettingViewModel(private val activity: Activity, private val dataSour
     fun saveReplySetting() {
         val currentName = name.value.toString()
         val currentReplyTarget = replyTarget.value.toString()
-        val currentDate = date.value.toString()
-        val currentHour = hour.value.toString()
-        val currentMinute = minute.value.toString()
+//        val currentDate = date.value.toString()
+//        val currentHour = hour.value.toString()
+//        val currentMinute = minute.value.toString()
         val currentMessage = message.value.toString()
         val currentsfsfsf = sfsfsf.value.toString()
 
         Log.d("Viewmodel", currentName)
         Log.d("Viewmodel", currentReplyTarget)
-        Log.d("Viewmodel", currentDate)
-        Log.d("Viewmodel", currentHour)
-        Log.d("Viewmodel", currentMinute)
+//        Log.d("Viewmodel", currentDate)
+//        Log.d("Viewmodel", currentHour)
+//        Log.d("Viewmodel", currentMinute)
         Log.d("Viewmodel", currentMessage)
         Log.d("Viewmodel", currentsfsfsf)
 //        if (currentName.isEmpty() || currentLocation.isEmpty()) {
@@ -153,9 +167,9 @@ class ReplySettingViewModel(private val activity: Activity, private val dataSour
     private fun resetFields() {
         name.value = ""
         replyTarget.value = ""
-        date.value = ""
-        hour.value = 0
-        minute.value = 0
+//        date.value = ""
+//        hour.value = 0
+//        minute.value = 0
         message.value = ""
     }
 }

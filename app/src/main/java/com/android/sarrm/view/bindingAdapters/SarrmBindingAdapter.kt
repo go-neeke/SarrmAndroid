@@ -1,13 +1,10 @@
-package com.android.sarrm.view.adapters
+package com.android.sarrm.view.bindingAdapters
 
-import androidx.databinding.BindingAdapter
-import androidx.databinding.InverseBindingListener
-import androidx.databinding.InverseBindingMethod
-import androidx.databinding.InverseBindingMethods
+import androidx.databinding.*
 import com.google.android.material.chip.ChipGroup
 
 @InverseBindingMethods(InverseBindingMethod(type = ChipGroup::class, attribute = "app:checkedButton", method = "getCheckedChipId"))
-class ChipGroupBindingAdapter {
+class SarrmBindingAdapter {
     companion object {
         @JvmStatic
         @BindingAdapter("app:checkedButton")

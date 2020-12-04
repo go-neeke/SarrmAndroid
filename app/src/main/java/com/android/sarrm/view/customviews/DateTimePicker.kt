@@ -10,6 +10,7 @@ import android.view.Window
 import android.widget.*
 import androidx.core.content.ContextCompat
 import com.android.sarrm.R
+import com.orhanobut.logger.Logger
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -17,7 +18,7 @@ class DateTimePicker(
     private var activity: Activity?,
     customDateTimeListener: ICustomDateTimeListener
 ) : View.OnClickListener {
-    private var datePicker: DatePicker? = null
+    private var datePicker: CalendarView? = null
     private var timePicker: TimePicker? = null
     private var viewSwitcher: ViewSwitcher? = null
 
@@ -36,8 +37,12 @@ class DateTimePicker(
     private var isAutoDismiss = true
 
 
-    private var selectedHour: Int = 0
+    private var selectedYear: Int = 0
+    private var selectedMonth: Int = 0
+    private var selectedDayOfMonth: Int = 0
     private var selectedMinute: Int = 0
+    private var selectedHour: Int = 0
+
     private var maxDateInMillis: Long? = null
     private var minDateInMillis: Long? = null
     private var maxTimeInMinute: Int? = null
@@ -99,7 +104,7 @@ class DateTimePicker(
             viewSwitcher = ViewSwitcher(activity)
             viewSwitcher!!.layoutParams = frameMatchWrap
 
-            datePicker = DatePicker(activity, null, R.style.MyDatePicker)
+            datePicker = CalendarView(activity!!)
             timePicker = TimePicker(activity, null, R.style.MyDatePicker)
             hideKeyboardInputInTimePicker(
                 activity?.resources?.configuration?.orientation!!,
@@ -110,11 +115,18 @@ class DateTimePicker(
                 // updateTime(hourOfDay, minute)
             }
 
+            datePicker!!.setOnDateChangeListener { datePicker, year, month, dayOfMonth ->
+                updateDate(
+                    year,
+                    month,
+                    dayOfMonth
+                )
+            }
+
             viewSwitcher!!.addView(timePicker)
             viewSwitcher!!.addView(datePicker)
 
             val linearBottom = LinearLayout(activity)
-            linearMatchWrap.topMargin = 8
             linearBottom.layoutParams = linearMatchWrap
 
             btnSet = Button(activity)
@@ -144,7 +156,7 @@ class DateTimePicker(
 
             linearChild.addView(linearTop)
             linearChild.addView(viewSwitcher)
-//            linearChild.addView(linearBottom)
+            linearChild.addView(linearBottom)
 //
             linearMain.addView(linearChild)
 
@@ -155,9 +167,9 @@ class DateTimePicker(
         if (minTimeInMinute != null) {
             val calendar = Calendar.getInstance()
             calendar.set(
-                datePicker?.year!!,
-                datePicker?.month!!,
-                datePicker?.dayOfMonth!!,
+                selectedYear,
+               selectedMonth,
+                selectedDayOfMonth,
                 hourOfDay,
                 minute
             )
@@ -175,6 +187,12 @@ class DateTimePicker(
         }
 
         updateDisplayedTime()
+    }
+
+    private fun updateDate(year: Int, month: Int, dayOfMonth: Int) {
+        selectedYear = year
+        selectedMonth = month
+        selectedDayOfMonth = dayOfMonth
     }
 
     init {
@@ -211,10 +229,8 @@ class DateTimePicker(
     }
 
     private fun updateDisplayedDate() {
-        datePicker?.updateDate(
-            calendarDate!!.get(Calendar.YEAR),
-            calendarDate!!.get(Calendar.MONTH),
-            calendarDate!!.get(Calendar.DATE)
+        datePicker?.setDate(
+            calendarDate?.timeInMillis!!
         )
 
         maxDateInMillis?.let {
@@ -365,16 +381,12 @@ class DateTimePicker(
 
             SET -> {
                 if (iCustomDateTimeListener != null) {
-                    val month = datePicker!!.month
-                    val year = datePicker!!.year
-                    val day = datePicker!!.dayOfMonth
-
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         updateTime(timePicker!!.hour, timePicker!!.minute)
                     } else {
                         updateTime(timePicker!!.currentHour, timePicker!!.currentMinute)
                     }
-                    calendarDate!!.set(year, month, day, selectedHour, selectedMinute)
+                    calendarDate!!.set(selectedYear, selectedMonth, selectedDayOfMonth, selectedHour, selectedMinute)
                     iCustomDateTimeListener!!.onSet(
                         dialog = dialog,
                         calendarSelected = calendarDate!!,
@@ -392,6 +404,7 @@ class DateTimePicker(
                         sec = calendarDate!!.get(Calendar.SECOND),
                         AM_PM = getAMPM(calendarDate!!)
                     )
+                    Logger.d("Calendar pick %s", datePicker?.getDate().toString())
                 }
                 if (dialog.isShowing && isAutoDismiss)
                     dialog.dismiss()

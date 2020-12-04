@@ -24,15 +24,16 @@
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2020.12.03\n05:00"
-                android:onClick="@{() -> replySettingViewModel.openDateTimePicker()}"
+                android:text="@{replySettingViewModel.startDateString}"
+                android:onClick="@{() -> replySettingViewModel.openDateTimePicker(1)}"
                 app:shapeAppearanceOverlay="@style/CustomShapeAppearanceOverlay.Button" />
 
             <com.google.android.material.button.MaterialButton
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2020.12.03\n07:00"
+                android:text="@{replySettingViewModel.endDateString}"
+                android:onClick="@{() -> replySettingViewModel.openDateTimePicker(2)}"
                 app:shapeAppearanceOverlay="@style/CustomShapeAppearanceOverlay22.Button" />
             />
         </LinearLayout>
