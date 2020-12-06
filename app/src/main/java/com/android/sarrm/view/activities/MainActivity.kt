@@ -62,59 +62,6 @@ class MainActivity : AppCompatActivity() {
 
         // 퍼미션 체크
         checkPermissions()
-
-        testCode()
-    }
-
-    private fun testCode() {
-        val replyTarget = AppConstants.ReplyTargetType.MY_CONTACT_LIST
-        val phoneNumber = "010-3258-9414"
-        val startDate = Calendar.getInstance()
-            .apply {
-                set(Calendar.YEAR, 2020)
-                set(Calendar.MONTH, 12)
-                set(Calendar.DAY_OF_MONTH, 3)
-                set(Calendar.HOUR_OF_DAY, 1)
-                set(Calendar.MINUTE, 10)
-            }.timeInMillis
-
-        val endDate = Calendar.getInstance()
-            .apply {
-                set(Calendar.YEAR, 2020)
-                set(Calendar.MONTH, 12)
-                set(Calendar.DAY_OF_MONTH, 3)
-                set(Calendar.HOUR_OF_DAY, 7)
-                set(Calendar.MINUTE, 10)
-            }.timeInMillis
-
-        val current = Calendar.getInstance()
-            .apply {
-                set(Calendar.YEAR, 2020)
-                set(Calendar.MONTH, 12)
-                set(Calendar.DAY_OF_MONTH, 3)
-                set(Calendar.HOUR_OF_DAY, 5)
-                set(Calendar.MINUTE, 10)
-            }.timeInMillis
-
-        if (current in startDate..endDate) {
-            Logger.d("startDate %d, endDate %d, current %d", startDate, endDate, current)
-
-            if (replyTarget == AppConstants.ReplyTargetType.ALL) {
-                Logger.d("무조건 end call -> receive sms")
-            } else if (replyTarget == AppConstants.ReplyTargetType.MY_CONTACT_LIST) {
-                if (CheckNumberContacts.isFromContacts(this, phoneNumber)){
-                    Logger.d("연락처 검색완료 -> receive sms")
-                } else {
-                    Logger.d("연락처 없음")
-                }
-            } else {
-                Logger.d("전화온 번호와 db에 저장된 번호가 동일하면 -> receive sms, 아니면 return")
-            }
-
-
-        }
-
-
     }
 
     private fun checkPermissions() {

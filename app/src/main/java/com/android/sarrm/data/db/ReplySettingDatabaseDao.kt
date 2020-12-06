@@ -7,14 +7,14 @@ import androidx.room.Query
 import com.android.sarrm.data.models.ReplySetting
 
 
-@Dao
-interface ReplySettingDatabaseDao {
-    @Query("SELECT * FROM reply_setting_table")
-    fun getAll(): List<ReplySetting>?
-
-    @Insert
-    fun insert(number: ReplySetting)
-
-    @Delete
-    fun delete(number: ReplySetting)
-}
+//@Dao
+//interface ReplySettingDatabaseDao {
+//    @Query("SELECT * FROM reply_setting_table")
+//    fun getAll(): List<ReplySetting>?
+//
+//    @Insert
+//    fun insert(number: ReplySetting)
+//
+//    @Delete
+//    fun delete(number: ReplySetting)
+//}

@@ -3,9 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="titleName"
             type="String" />
+
         <variable
             name="replySettingViewModel"
             type="com.android.sarrm.view.models.ReplySettingViewModel" />
@@ -24,20 +26,25 @@
             android:layout_height="wrap_content"
             app:titleName="@{titleName}" />
 
-        <!-- 응답 메시지 입력 -->
-        <EditText
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="@dimen/reply_message_height"
-            android:isScrollContainer="true"
-            android:inputType="textMultiLine"
-            android:background="@drawable/round_outline"
-            android:hint="@string/hint_menu_reply_message"
-            android:textAppearance="@android:style/TextAppearance.Material.Widget.EditText"
-            android:padding="@dimen/common_margin"
-            android:textSize="@dimen/common_text_size"
-            android:cursorVisible="true"
-            android:gravity="top"
-            android:layout_marginTop="@dimen/common_margin"
-            android:text="@={replySettingViewModel.message}"/>
+            android:layout_height="wrap_content">
+            <!-- 응답 메시지 입력 -->
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/common_margin"
+                android:background="@drawable/round_outline"
+                android:cursorVisible="true"
+                android:gravity="top"
+                android:hint="@string/hint_menu_reply_message"
+                android:inputType="textMultiLine"
+                android:isScrollContainer="true"
+                android:maxHeight="@dimen/reply_message_height"
+                android:padding="@dimen/common_margin"
+                android:text="@={replySettingViewModel.message}"
+                android:textAppearance="@android:style/TextAppearance.Material.Widget.EditText"
+                android:textSize="@dimen/common_text_size" />
+        </androidx.core.widget.NestedScrollView>
     </LinearLayout>
 </layout>

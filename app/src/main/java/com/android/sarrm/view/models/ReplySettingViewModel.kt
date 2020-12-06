@@ -3,44 +3,74 @@ package com.android.sarrm.view.models
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
-import android.content.Context
-import android.util.Log
 import android.view.View
 import android.widget.AdapterView
-import androidx.databinding.InverseBindingListener
-import androidx.lifecycle.*
-import androidx.savedstate.SavedStateRegistryOwner
-import com.android.sarrm.application.SarrmApplication
-import com.android.sarrm.data.db.ReplySettingDatabaseDao
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import com.android.sarrm.R
+import com.android.sarrm.converts.ViewConverter
+import com.android.sarrm.data.models.DateModel
+import com.android.sarrm.data.models.RepeatType
 import com.android.sarrm.data.models.ReplySetting
-import com.android.sarrm.utils.DateUtils
 import com.android.sarrm.view.customviews.DateTimePicker
-import com.google.android.material.chip.ChipGroup
-import com.orhanobut.logger.Logger
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import io.realm.Realm
 import java.util.*
 
-class ReplySettingViewModel(private val activity: Activity, private val dataSource: ReplySettingDatabaseDao) : ViewModel() {
-    // Two-way databinding, exposing MutableLiveData
-    val name = MutableLiveData<String>()
-    val replyTarget = MutableLiveData<String>()
-    val phoneNumber = MutableLiveData<String>()
-    val repeatType = MutableLiveData<String>()
-    val message = MutableLiveData<String>()
-    val isSelectedPhoneNumber = MutableLiveData<Boolean>()
-    val isSelectedRepeatSpecific = MutableLiveData<Boolean>()
-    val sfsfsf =MutableLiveData<Int>()
 
-    var startDate = MutableLiveData<Date>()
-    fun getStartDateString(): String {
-        return DateUtils.toSimpleString(startDate.value!!)
+class ReplySettingViewModel(
+    private val activity: Activity
+) : ViewModel() {
+
+    val realm: Realm by lazy {
+        Realm.getDefaultInstance()
     }
 
-    var endDate = MutableLiveData<Date>()
-    fun getEndDateString(): String {
-        return DateUtils.toSimpleString(endDate.value!!)
+    // Two-way databinding, exposing MutableLiveData
+    val name = MutableLiveData<String>()    // 설정이름
+    val phoneNumber = MutableLiveData<String>()    // 폰번호
+    val message = MutableLiveData<String>()   // 응답 메시지
+
+    val isSelectedPhoneNumber = MutableLiveData<Boolean>()   // 응답 대상 Spinner 선택
+    val isOverWeek = MutableLiveData<Boolean>()
+
+    var startDate = Date()
+    val startDateString = MutableLiveData<String>().default(ViewConverter.dateToString(startDate))
+
+    var endDate = Date()
+    val endDateString = MutableLiveData<String>().default(ViewConverter.dateToString(endDate))
+
+    var dateList = getSettingDateList()
+    var repeatTypeList = getRepeatList()
+
+    var replyTarget: Int = 0
+
+    override fun onCleared() {
+        realm.close()
+        super.onCleared()
+    }
+
+    fun <T : Any?> MutableLiveData<T>.default(initialValue: T) = apply { setValue(initialValue) }
+
+    fun getSettingDateList(): MutableList<DateModel> {
+        var dateList = listOf(activity.resources.getStringArray(R.array.setting_date_array))
+        val list: MutableList<DateModel> = ArrayList()
+
+        for ((index, item) in dateList[0].withIndex()) {
+            list.add(DateModel(index, item, false))
+        }
+
+        return list
+    }
+
+    fun getRepeatList(): MutableList<RepeatType> {
+        var typeList = listOf(activity.resources.getStringArray(R.array.repeat_type_array))
+        val list: MutableList<RepeatType> = ArrayList()
+
+        for ((index, item) in typeList[0].withIndex()) {
+            list.add(RepeatType(index, item, false))
+        }
+
+        return list
     }
 
     val onSelectedReplyTargetListener = object : AdapterView.OnItemSelectedListener {
@@ -48,33 +78,12 @@ class ReplySettingViewModel(private val activity: Activity, private val dataSour
         }
 
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-            replyTarget.value = parent?.getItemAtPosition(position) as String
+            replyTarget = position
             isSelectedPhoneNumber.value = position == 2
         }
     }
 
-    val onSelectedRepeatTypeListener = object : AdapterView.OnItemSelectedListener {
-        override fun onNothingSelected(parent: AdapterView<*>?) {
-        }
-
-        override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-            repeatType.value = parent?.getItemAtPosition(position) as String
-            isSelectedRepeatSpecific.value = position == 2
-        }
-    }
-
-    val onSelectedDayListener =
-        ChipGroup.OnCheckedChangeListener { group, checkedId -> sfsfsf.value=checkedId }
-//        ChipGroup.OnCheckedChangeListener { group, checkedId -> Log.d("AGA", checkedId.toString()) }
-//    val onSelectedDayddListener = InverseBindingListener { Log.d("AGA", "fdfdfd") }
-
-    fun onStyleChange(chipGroup: ChipGroup, id: Int) {
-//        Log.e(Thread.currentThread().name, "style_change: $id")
-        sfsfsf.value=id
-//        onOrderChange?.invoke(id)
-    }
-
-    fun openDateTimePicker(type:Int) {
+    fun openDateTimePicker(type: Int) {
         DateTimePicker(activity, object : DateTimePicker.ICustomDateTimeListener {
             @SuppressLint("BinaryOperationInTimber")
             override fun onSet(
@@ -94,12 +103,14 @@ class ReplySettingViewModel(private val activity: Activity, private val dataSour
                 sec: Int,
                 AM_PM: String
             ) {
-                if (type == 1) startDate.value = dateSelected else endDate.value = dateSelected
+                if (type == 1) startDate = dateSelected else endDate = dateSelected
+                startDateString.value = ViewConverter.dateToString(startDate)
+                endDateString.value = ViewConverter.dateToString(endDate)
 
+                val timeForweek =
+                    (6 * 24 * 60 * 60 * 1000).toLong() /// here 24*60*60*1000 =24 hours i.e 1 day
 
-                Logger.d("startDate %s",startDate.toString())
-                Logger.d("endDate %s",endDate.toString())
-                //Get any time of date and time data here and process further...
+                isOverWeek.value = endDate.time - startDate.time > timeForweek
             }
 
             override fun onCancel() {
@@ -107,8 +118,14 @@ class ReplySettingViewModel(private val activity: Activity, private val dataSour
         }).apply {
             set24HourFormat(false)//24hr format is off
             setMaxMinDisplayDate(
-                minDate = Calendar.getInstance().apply { add(Calendar.MINUTE, 5) }.timeInMillis,//min date is 5 min after current time
-                maxDate = Calendar.getInstance().apply { add(Calendar.YEAR, 1) }.timeInMillis//max date is next 1 year
+                minDate = Calendar.getInstance().apply {
+                    add(
+                        Calendar.MINUTE,
+                        5
+                    )
+                }.timeInMillis,//min date is 5 min after current time
+                maxDate = Calendar.getInstance()
+                    .apply { add(Calendar.YEAR, 1) }.timeInMillis//max date is next 1 year
             )
             setMaxMinDisplayedTime(5)//min time is 5 min after current time
             setDate(Calendar.getInstance())//date and time will show in dialog is current time and date. We can change this according to our need
@@ -117,59 +134,19 @@ class ReplySettingViewModel(private val activity: Activity, private val dataSour
     }
 
     fun saveReplySetting() {
-        val currentName = name.value.toString()
-        val currentReplyTarget = replyTarget.value.toString()
-//        val currentDate = date.value.toString()
-//        val currentHour = hour.value.toString()
-//        val currentMinute = minute.value.toString()
-        val currentMessage = message.value.toString()
-        val currentsfsfsf = sfsfsf.value.toString()
-
-        Log.d("Viewmodel", currentName)
-        Log.d("Viewmodel", currentReplyTarget)
-//        Log.d("Viewmodel", currentDate)
-//        Log.d("Viewmodel", currentHour)
-//        Log.d("Viewmodel", currentMinute)
-        Log.d("Viewmodel", currentMessage)
-        Log.d("Viewmodel", currentsfsfsf)
-//        if (currentName.isEmpty() || currentLocation.isEmpty()) {
-//            _snackbarText.value = "Please fill out Name and Location"
-//            return
-//        }
-
-//        insertNewReplySetting(
-//            ReplySetting(
-//                currentName,
-//                currentReplyTarget,
-//                currentDate,
-//                currentHour,
-//                currentMinute,
-//                currentMessage
-//            )
-//        )
-    }
-
-
-    private fun insertNewReplySetting(replySetting: ReplySetting) {
-        viewModelScope.launch {
-            insertReplySetting(replySetting)
-            resetFields()
+        val realm: Realm = Realm.getDefaultInstance()
+        realm.executeTransaction {
+            val newReplySetting = realm.createObject(ReplySetting::class.java)
+            newReplySetting.name = name.value.toString()
+            newReplySetting.phoneNumber = phoneNumber.value.toString()
+            newReplySetting.message = message.value.toString()
+            newReplySetting.startDate = startDate.time
+            newReplySetting.endDate = endDate.time
+            newReplySetting.repeatType =
+                repeatTypeList.filter { it.ischecked }.map(RepeatType::id)[0]
+            val checkedDayList = dateList.filter { it.ischecked }.map(DateModel::id)
+            newReplySetting.dayList.addAll(checkedDayList)
         }
-
-    }
-
-    private suspend fun insertReplySetting(replySetting: ReplySetting) {
-        withContext(Dispatchers.IO) {
-            dataSource.insert(replySetting)
-        }
-    }
-
-    private fun resetFields() {
-        name.value = ""
-        replyTarget.value = ""
-//        date.value = ""
-//        hour.value = 0
-//        minute.value = 0
-        message.value = ""
+        realm.close()
     }
 }

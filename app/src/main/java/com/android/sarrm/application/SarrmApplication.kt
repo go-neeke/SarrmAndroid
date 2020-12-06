@@ -5,6 +5,8 @@ import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
+import io.realm.Realm
+import io.realm.RealmConfiguration
 
 
 class SarrmApplication : MultiDexApplication() {
@@ -26,6 +28,12 @@ class SarrmApplication : MultiDexApplication() {
         super.onCreate()
         instance = this
 
+        Realm.init(this)
+        Realm.setDefaultConfiguration(getDefaultConfiguration())
         Logger.addLogAdapter(AndroidLogAdapter())
+    }
+
+    private fun getDefaultConfiguration() :RealmConfiguration {
+        return RealmConfiguration.Builder().schemaVersion(0).build()
     }
 }

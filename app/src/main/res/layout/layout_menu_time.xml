@@ -21,46 +21,28 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:paddingVertical="@dimen/common_margin">
-                <!-- 타이틀 -->
-                <include
-                    android:id="@+id/layoutTitle"
-                    layout="@layout/layout_menu_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:titleName="@{titleName}" />
-
-                <include
-                    android:id="@+id/layoutBorder"
-                    layout="@layout/layout_border"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/common_margin" />
-            </LinearLayout>
-
-
-
-        <!-- 요일 설정 -->
-        <!-- 반복설정을 특정요일로 선택했을 때만 요일 지정하는 view가 보임 -->
-<!--        <include-->
-<!--            layout="@layout/layout_setting_date"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="@dimen/common_margin"-->
-<!--            android:visibility="@{replySettingViewModel.isSelectedRepeatSpecific ? View.VISIBLE : View.GONE}"-->
-<!--            app:replySettingViewModel="@{replySettingViewModel}" />-->
+        <!-- 타이틀 -->
+        <include
+            android:id="@+id/layoutTitle"
+            layout="@layout/layout_menu_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:titleName="@{titleName}" />
 
         <!-- 시간 설정 -->
         <include
             layout="@layout/layout_setting_time"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/time_picker_height"
+            android:layout_height="wrap_content"
             app:replySettingViewModel="@{replySettingViewModel}" />
 
+        <!-- 요일 설정 -->
+        <include
+            layout="@layout/layout_setting_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/common_margin"
+            app:replySettingViewModel="@{replySettingViewModel}"
+            android:visibility="@{replySettingViewModel.isOverWeek ? View.VISIBLE : View.GONE}" />
     </LinearLayout>
 </layout>

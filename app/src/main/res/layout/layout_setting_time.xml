@@ -9,48 +9,32 @@
             type="com.android.sarrm.view.models.ReplySettingViewModel" />
     </data>
 
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <com.google.android.material.button.MaterialButton
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@{replySettingViewModel.startDateString}"
-                android:onClick="@{() -> replySettingViewModel.openDateTimePicker(1)}"
-                app:shapeAppearanceOverlay="@style/CustomShapeAppearanceOverlay.Button" />
-
-            <com.google.android.material.button.MaterialButton
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@{replySettingViewModel.endDateString}"
-                android:onClick="@{() -> replySettingViewModel.openDateTimePicker(2)}"
-                app:shapeAppearanceOverlay="@style/CustomShapeAppearanceOverlay22.Button" />
-            />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <!-- Start Date -->
+        <com.google.android.material.button.MaterialButton
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-<!--        <com.android.sarrm.view.customviews.CustomDatePicker-->
-<!--            android:id="@+id/datePicker"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content" />-->
-<!--            <com.android.sarrm.view.customviews.CustomTimePicker-->
-<!--                android:id="@+id/timePicker"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content" />-->
-        </LinearLayout>
+            android:layout_weight="1"
+            android:onClick="@{() -> replySettingViewModel.openDateTimePicker(1)}"
+            android:text="@={replySettingViewModel.startDateString}"
+            app:shapeAppearanceOverlay="@style/CustomShapeAppearanceOverlay.StartButton" />
+
+        <!-- End Date -->
+        <com.google.android.material.button.MaterialButton
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="@{() -> replySettingViewModel.openDateTimePicker(2)}"
+            android:text="@={replySettingViewModel.endDateString}"
+            app:shapeAppearanceOverlay="@style/CustomShapeAppearanceOverlay.EndButton" />
     </LinearLayout>
 
 </layout>

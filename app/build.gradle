@@ -2,6 +2,12 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'realm-android'
+
+realm {
+    syncEnabled = true
+    kotlinExtensionsEnabled = true
+}
 
 android {
     compileSdkVersion 30
@@ -89,6 +95,8 @@ dependencies {
 
     //Logger
     implementation 'com.orhanobut:logger:2.2.0'
+
+    implementation 'com.google.android:flexbox:2.0.1'
 
     // Testing
     testImplementation 'junit:junit:4.13.1'

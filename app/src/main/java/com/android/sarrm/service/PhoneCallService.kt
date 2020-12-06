@@ -17,9 +17,12 @@ import android.provider.Settings
 import android.telephony.PhoneStateListener
 import android.telephony.TelephonyManager
 import android.util.Log
+import androidx.core.app.NotificationCompat
+import com.android.sarrm.R
 import com.android.sarrm.application.SarrmApplication
 import com.android.sarrm.receiver.AlarmReceiver
 import com.android.sarrm.listener.PhoneCallStateListener
+import com.android.sarrm.view.activities.MainActivity
 import java.util.*
 
 
@@ -99,6 +102,17 @@ class PhoneCallService() : Service() {
                 val intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
                 intent.data = Uri.parse("package:$packageName")
                 SarrmApplication.getInstance().applicationContext.startActivity(intent.addFlags(FLAG_ACTIVITY_NEW_TASK))
+//                val fullScreenIntent = Intent(this, MainActivity::class.java)
+//                val fullScreenPendingIntent = PendingIntent.getActivity(this, 0,
+//                    fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+//
+//                var builder = NotificationCompat.Builder(this, "CHANNEL_ID")
+//                    .setSmallIcon(R.mipmap.ic_launcher)
+//                    .setContentTitle("My notification")
+//                    .setContentText("Hello World!")
+//                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+//                    .setFullScreenIntent(fullScreenPendingIntent, true)
+//                builder.build()
             } else Log.e("화이트리스트", "화이트리스트에 등록되어져 있습니다.")
         }
     }
