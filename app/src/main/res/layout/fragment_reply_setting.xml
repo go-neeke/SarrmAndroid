@@ -51,20 +51,21 @@
             android:layout_height="@dimen/top_logo_desc_height"
             android:src="@drawable/description_sarrm"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textLogo" />
+            app:layout_constraintTop_toBottomOf="@id/textLogo"
+            />
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="@dimen/header_margin"
+            android:layout_height="match_parent"
             android:fillViewport="true"
+            android:layout_marginTop="@dimen/main_margin_top"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textDescription">
 
             <!-- 메뉴들 -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginVertical="@dimen/common_margin"
                 android:background="@drawable/round_outline"
                 android:orientation="vertical"
@@ -104,21 +105,27 @@
                     android:layout_marginVertical="@dimen/common_margin"
                     app:replySettingViewModel="@{replySettingViewModel}"
                     app:titleName="@{titleMenuReplyMessage}" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right">
+                    <!-- 저장 버튼 -->
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:background="@drawable/selector_save_button"
+                        android:onClick="@{() -> replySettingViewModel.saveReplySetting()}"
+                        android:paddingHorizontal="@dimen/save_button_padding"
+                        android:text="@string/button_text_save"
+                        android:textColor="@color/white" />
+                </LinearLayout>
             </LinearLayout>
 
         </androidx.core.widget.NestedScrollView>
 
-        <!-- 저장 버튼 -->
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/selector_save_button"
-            android:onClick="@{() -> replySettingViewModel.saveReplySetting()}"
-            android:paddingHorizontal="@dimen/save_button_padding"
-            android:text="@string/button_text_save"
-            android:textColor="@color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

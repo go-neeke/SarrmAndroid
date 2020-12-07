@@ -2,6 +2,7 @@ package com.android.sarrm.view.binding
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.widget.CompoundButton
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatRadioButton
 import android.widget.RadioGroup
@@ -24,7 +25,8 @@ class ViewBindingAdapter {
             group.removeAllViews()
             if (list.isNullOrEmpty()) return
             for ((index, item) in list.withIndex()) {
-                val inflater: LayoutInflater = group.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+                val inflater: LayoutInflater =
+                    group.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
                 val chip = inflater.inflate(R.layout.layout_chip, group, false) as Chip
                 chip.id = index
                 chip.text = item.date
@@ -37,8 +39,12 @@ class ViewBindingAdapter {
         }
 
         @JvmStatic
-        @BindingAdapter(value = ["radioList"], requireAll = true)
-        fun bindRadios(group: RadioGroup, list: MutableList<RepeatType>?) {
+        @BindingAdapter("app:radioList", "app:onSelectedSpecificDayListener", requireAll = true)
+        fun bindRadios(
+            group: RadioGroup,
+            list: MutableList<RepeatType>?,
+            onSelectedSpecificDayListener: CompoundButton.OnCheckedChangeListener
+        ) {
             group.removeAllViews()
             if (list.isNullOrEmpty()) return
             for ((index, item) in list.withIndex()) {
@@ -53,9 +59,8 @@ class ViewBindingAdapter {
                 radio.layoutParams = params
                 radio.id = index
                 radio.text = item.type
-                radio.setOnCheckedChangeListener { view, isChecked ->
-                    item.ischecked = isChecked
-                }
+                radio.isChecked = index == 0
+                radio.setOnCheckedChangeListener(onSelectedSpecificDayListener)
 
                 group.addView(radio)
             }
