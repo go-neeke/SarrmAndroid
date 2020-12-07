@@ -5,6 +5,7 @@ import android.app.Activity
 import android.app.Dialog
 import android.view.View
 import android.widget.AdapterView
+import android.widget.CompoundButton
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.android.sarrm.R
@@ -15,6 +16,7 @@ import com.android.sarrm.data.models.ReplySetting
 import com.android.sarrm.view.customviews.DateTimePicker
 import io.realm.Realm
 import java.util.*
+import com.orhanobut.logger.Logger
 
 
 class ReplySettingViewModel(
@@ -32,6 +34,7 @@ class ReplySettingViewModel(
 
     val isSelectedPhoneNumber = MutableLiveData<Boolean>()   // 응답 대상 Spinner 선택
     val isOverWeek = MutableLiveData<Boolean>()
+    val isSelsectedSpecificDay = MutableLiveData<Boolean>()
 
     var startDate = Date()
     val startDateString = MutableLiveData<String>().default(ViewConverter.dateToString(startDate))
@@ -79,30 +82,20 @@ class ReplySettingViewModel(
 
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
             replyTarget = position
-            isSelectedPhoneNumber.value = position == 2
+            isSelectedPhoneNumber.value = position == 2     // 번호 지정 선택시 핸드폰 번호 입력란 보이도록
         }
     }
+
+    val onSelectedSpecificDayListener =
+        CompoundButton.OnCheckedChangeListener { view, isChecked ->
+            repeatTypeList[view?.id!!]?.ischecked = isChecked
+            if (view.id == 3) isSelsectedSpecificDay.value = isChecked      // 특정 요일 지정시 요일 선택 보이도록
+        }
 
     fun openDateTimePicker(type: Int) {
         DateTimePicker(activity, object : DateTimePicker.ICustomDateTimeListener {
             @SuppressLint("BinaryOperationInTimber")
-            override fun onSet(
-                dialog: Dialog,
-                calendarSelected: Calendar,
-                dateSelected: Date,
-                year: Int,
-                monthFullName: String,
-                monthShortName: String,
-                monthNumber: Int,
-                day: Int,
-                weekDayFullName: String,
-                weekDayShortName: String,
-                hour24: Int,
-                hour12: Int,
-                min: Int,
-                sec: Int,
-                AM_PM: String
-            ) {
+            override fun onSet(dateSelected: Date) {
                 if (type == 1) startDate = dateSelected else endDate = dateSelected
                 startDateString.value = ViewConverter.dateToString(startDate)
                 endDateString.value = ViewConverter.dateToString(endDate)
@@ -110,7 +103,7 @@ class ReplySettingViewModel(
                 val timeForweek =
                     (6 * 24 * 60 * 60 * 1000).toLong() /// here 24*60*60*1000 =24 hours i.e 1 day
 
-                isOverWeek.value = endDate.time - startDate.time > timeForweek
+                isOverWeek.value = endDate.time - startDate.time > timeForweek      // 일주일 이상일 경우 반복 설정 가능
             }
 
             override fun onCancel() {

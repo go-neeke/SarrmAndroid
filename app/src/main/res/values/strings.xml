@@ -46,6 +46,7 @@
 
     <!-- 반복 설정 -->
     <string-array name="repeat_type_array">
+        <item>매일</item>
         <item>주중에만</item>
         <item>주말에만</item>
         <item>특정 요일 지정</item>

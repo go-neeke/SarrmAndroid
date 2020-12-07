@@ -28,8 +28,10 @@
     <dimen name="top_logo_height">30dp</dimen>
     <dimen name="top_logo_desc_width">200dp</dimen>
     <dimen name="top_logo_desc_height">20dp</dimen>
+    <dimen name="main_margin_top">50dp</dimen>
     <dimen name="save_button_padding">48dp</dimen>
-    <dimen name="reply_message_height">100dp</dimen>
+    <dimen name="reply_message_min_height">100dp</dimen>
+    <dimen name="reply_message_max_height">200dp</dimen>
 
     <!-- 폰트 사이즈 -->
     <dimen name="common_text_size">16sp</dimen>

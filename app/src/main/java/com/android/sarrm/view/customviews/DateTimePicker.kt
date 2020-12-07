@@ -168,7 +168,7 @@ class DateTimePicker(
             val calendar = Calendar.getInstance()
             calendar.set(
                 selectedYear,
-               selectedMonth,
+                selectedMonth,
                 selectedDayOfMonth,
                 hourOfDay,
                 minute
@@ -344,13 +344,7 @@ class DateTimePicker(
     }
 
     interface ICustomDateTimeListener {
-        fun onSet(
-            dialog: Dialog, calendarSelected: Calendar,
-            dateSelected: Date, year: Int, monthFullName: String,
-            monthShortName: String, monthNumber: Int, day: Int,
-            weekDayFullName: String, weekDayShortName: String, hour24: Int,
-            hour12: Int, min: Int, sec: Int, AM_PM: String
-        )
+        fun onSet(dateSelected: Date)
 
         fun onCancel()
     }
@@ -386,24 +380,14 @@ class DateTimePicker(
                     } else {
                         updateTime(timePicker!!.currentHour, timePicker!!.currentMinute)
                     }
-                    calendarDate!!.set(selectedYear, selectedMonth, selectedDayOfMonth, selectedHour, selectedMinute)
-                    iCustomDateTimeListener!!.onSet(
-                        dialog = dialog,
-                        calendarSelected = calendarDate!!,
-                        dateSelected = calendarDate!!.time,
-                        year = calendarDate!!.get(Calendar.YEAR),
-                        monthFullName = getMonthFullName(calendarDate!!.get(Calendar.MONTH)),
-                        monthShortName = getMonthShortName(calendarDate!!.get(Calendar.MONTH)),
-                        monthNumber = calendarDate!!.get(Calendar.MONTH),
-                        day = calendarDate!!.get(Calendar.DAY_OF_MONTH),
-                        weekDayFullName = getWeekDayFullName(calendarDate!!.get(Calendar.DAY_OF_WEEK)),
-                        weekDayShortName = getWeekDayShortName(calendarDate!!.get(Calendar.DAY_OF_WEEK)),
-                        hour24 = if (is24HourView) calendarDate!!.get(Calendar.HOUR_OF_DAY) else 0,
-                        hour12 = getHourIn12Format(calendarDate!!.get(Calendar.HOUR_OF_DAY)),
-                        min = calendarDate!!.get(Calendar.MINUTE),
-                        sec = calendarDate!!.get(Calendar.SECOND),
-                        AM_PM = getAMPM(calendarDate!!)
+                    calendarDate!!.set(
+                        selectedYear,
+                        selectedMonth,
+                        selectedDayOfMonth,
+                        selectedHour,
+                        selectedMinute
                     )
+                    iCustomDateTimeListener!!.onSet(dateSelected = calendarDate!!.time)
                     Logger.d("Calendar pick %s", datePicker?.getDate().toString())
                 }
                 if (dialog.isShowing && isAutoDismiss)

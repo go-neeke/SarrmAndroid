@@ -26,13 +26,12 @@
             android:layout_height="wrap_content"
             app:titleName="@{titleName}" />
 
-        <androidx.core.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
             <!-- 응답 메시지 입력 -->
             <EditText
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:maxHeight="@dimen/reply_message_max_height"
+                android:minHeight="@dimen/reply_message_min_height"
                 android:layout_marginTop="@dimen/common_margin"
                 android:background="@drawable/round_outline"
                 android:cursorVisible="true"
@@ -40,11 +39,9 @@
                 android:hint="@string/hint_menu_reply_message"
                 android:inputType="textMultiLine"
                 android:isScrollContainer="true"
-                android:maxHeight="@dimen/reply_message_height"
                 android:padding="@dimen/common_margin"
                 android:text="@={replySettingViewModel.message}"
                 android:textAppearance="@android:style/TextAppearance.Material.Widget.EditText"
                 android:textSize="@dimen/common_text_size" />
-        </androidx.core.widget.NestedScrollView>
     </LinearLayout>
 </layout>
