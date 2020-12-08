@@ -54,6 +54,8 @@ class ViewBindingAdapter {
                     RadioGroup.LayoutParams.WRAP_CONTENT
                 );
 
+                item.ischecked = index == 0
+
                 params.weight = 1.0f
 
                 radio.layoutParams = params

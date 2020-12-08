@@ -29,7 +29,8 @@
         <item name="cornerSizeBottomRight">0dp</item>
     </style>
 
-    <style name="MyDatePicker">
+    <style name="MyDatePicker" >
+        <item name="colorPrimary">#ffffff</item>
         <item name="android:timePickerMode">spinner</item>
     </style>
 </resources>

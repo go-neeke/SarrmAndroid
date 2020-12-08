@@ -51,7 +51,7 @@
             <!-- 응답 대상 선택 -->
             <Spinner
                 android:id="@+id/spinnerReplyTarget"
-                style="@android:style/Widget.Spinner.DropDown"
+                style="@style/Widget.AppCompat.Spinner.DropDown"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/round_outline"
