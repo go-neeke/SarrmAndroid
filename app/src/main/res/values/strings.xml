@@ -28,13 +28,13 @@
     <string name="only_weekend">주말에만</string>
 
     <string-array name="setting_date_array">
+        <item name="sunday">일</item>
         <item name="monday">월</item>
         <item name="tuesday">화</item>
         <item name="wednesday">수</item>
         <item name="thursday">목</item>
         <item name="friday">금</item>
         <item name="saturday">토</item>
-        <item name="sunday">일</item>
     </string-array>
 
     <!-- 응답 대상 -->

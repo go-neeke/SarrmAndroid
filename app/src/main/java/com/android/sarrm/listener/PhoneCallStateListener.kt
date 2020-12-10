@@ -45,54 +45,54 @@ class PhoneCallStateListener(private val context: Context) : PhoneStateListener(
     }
 
     private fun checkRepeatType(replySetting: ReplySetting, incomingNumber: String) {
-        val startDate = replySetting.startDate
-        val endDate = replySetting.endDate
-        val repeatType = replySetting.repeatType
-        val dayList = replySetting.dayList
-
-        val current = Calendar.getInstance()
-
-        if (current.timeInMillis in startDate..endDate) {
-            val timeForweek =
-                (6 * 24 * 60 * 60 * 1000).toLong() /// here 24*60*60*1000 =24 hours i.e 1 day
-
-            if (endDate - startDate > timeForweek) {
-                Logger.d("일주일이상임")
-                val currentDay = current.get(Calendar.DAY_OF_WEEK) - 1
-                // 일주일 이상일 경우, repeat type 체크
-                when (repeatType) {
-                    3 -> if (dayList.all { it == currentDay }) {
-                        Logger.d("특정 요일 지정 current day = %s",currentDay)
-                        checkReplyTarget(
-                            replySetting,
-                            incomingNumber
-                        )
-                    }
-                    2 -> if (currentDay == 1 || currentDay == 7) {
-                        Logger.d("주말에만 current day = %s",currentDay)
-                        checkReplyTarget(
-                            replySetting,
-                            incomingNumber
-                        )
-                    }
-                    1 -> if (currentDay in 2..6) {
-                        Logger.d("주중에만 current day = %s",currentDay)
-                        checkReplyTarget(
-                            replySetting,
-                            incomingNumber
-                        )
-                    }
-                    0 -> checkReplyTarget(
-                        replySetting,
-                        incomingNumber
-                    )
-                }
-            } else {
-                Logger.d("일주일 이하")
-                // 아닐 경우,
-                checkReplyTarget(replySetting, incomingNumber)
-            }
-        }
+//        val startDate = replySetting.startDate
+//        val endDate = replySetting.endDate
+//        val repeatType = replySetting.repeatType
+//        val dayList = replySetting.dayList
+//
+//        val current = Calendar.getInstance()
+//
+//        if (current.timeInMillis in startDate..endDate) {
+//            val timeForweek =
+//                (6 * 24 * 60 * 60 * 1000).toLong() /// here 24*60*60*1000 =24 hours i.e 1 day
+//
+//            if (endDate - startDate > timeForweek) {
+//                Logger.d("일주일이상임")
+//                val currentDay = current.get(Calendar.DAY_OF_WEEK) - 1
+//                // 일주일 이상일 경우, repeat type 체크
+//                when (repeatType) {
+//                    3 -> if (dayList.all { it == currentDay }) {
+//                        Logger.d("특정 요일 지정 current day = %s",currentDay)
+//                        checkReplyTarget(
+//                            replySetting,
+//                            incomingNumber
+//                        )
+//                    }
+//                    2 -> if (currentDay == 1 || currentDay == 7) {
+//                        Logger.d("주말에만 current day = %s",currentDay)
+//                        checkReplyTarget(
+//                            replySetting,
+//                            incomingNumber
+//                        )
+//                    }
+//                    1 -> if (currentDay in 2..6) {
+//                        Logger.d("주중에만 current day = %s",currentDay)
+//                        checkReplyTarget(
+//                            replySetting,
+//                            incomingNumber
+//                        )
+//                    }
+//                    0 -> checkReplyTarget(
+//                        replySetting,
+//                        incomingNumber
+//                    )
+//                }
+//            } else {
+//                Logger.d("일주일 이하")
+//                // 아닐 경우,
+//                checkReplyTarget(replySetting, incomingNumber)
+//            }
+//        }
     }
 
     private fun checkReplyTarget(replySetting: ReplySetting, incomingNumber: String) {

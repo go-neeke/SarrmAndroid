@@ -42,22 +42,17 @@ class PhoneCallReceiver() : BroadcastReceiver() {
     @SuppressLint("CheckResult")
     override fun onReceive(context: Context, intent: Intent) {
         if (TelephonyManager.ACTION_PHONE_STATE_CHANGED != intent?.action) {
-            Logger.e(
-                "IncomingCallReceiver called with incorrect intent action: %s",
-                intent?.action
-
-            )
+            Logger.e("IncomingCallReceiver called with incorrect intent action: %s", intent?.action)
             return
         }
 
         val newState: String? = intent.getStringExtra(TelephonyManager.EXTRA_STATE)
         Logger.d("Call state changed to %s", newState)
 
-
         if (TelephonyManager.EXTRA_STATE_RINGING == newState) {
             val incomingNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
             if (incomingNumber == null) {
-                Logger.d("Ignoring empty phone number broadcast receiver");
+                Logger.e("Ignoring empty phone number broadcast receiver");
                 return
             }
 
@@ -65,7 +60,91 @@ class PhoneCallReceiver() : BroadcastReceiver() {
             Realm.getDefaultInstance().use { realm ->
                 realm.where(ReplySetting::class.java).findAll().forEach {
                     Logger.d("ReplySetting name %s", it.toString())
-                    checkRepeatType(context, it, incomingNumber!!)
+                    checkReplyTarget(context, it, incomingNumber!!)
+                }
+            }
+        }
+    }
+
+//    private fun checkTime(
+//        startDate:Long,
+//        endDate:Long,
+//    ): Boolean {
+//        val startCalendar = longToCalendar(startDate)
+//        val endCalendar = longToCalendar(endDate)
+//        val current = Calendar.getInstance();
+//
+//        return current.get(Calendar.HOUR_OF_DAY) in startCalendar.get(Calendar.HOUR_OF_DAY)..endCalendar.get(
+//            Calendar.HOUR_OF_DAY
+//        )
+//                && current.get(Calendar.MINUTE) in startCalendar.get(Calendar.MINUTE)..endCalendar.get(
+//            Calendar.MINUTE
+//        );
+//    }
+
+    private fun testCode(
+        context: Context,
+        incomingNumber: String
+    ) {
+        val startDate = Calendar.getInstance()
+            .apply {
+                set(Calendar.HOUR_OF_DAY, 10)
+                set(Calendar.MINUTE, 10)
+            }
+
+        val endDate = Calendar.getInstance()
+            .apply {
+                set(Calendar.HOUR_OF_DAY, 12)
+                set(Calendar.MINUTE, 10)
+            }
+
+        val current = Calendar.getInstance()
+            .apply {
+                set(Calendar.HOUR_OF_DAY, 11)
+                set(Calendar.MINUTE, 50)
+            }
+
+        Logger.d("run testCode")
+
+        if (current.timeInMillis in startDate.timeInMillis..endDate.timeInMillis) {
+            val currentDay = current.get(Calendar.DAY_OF_WEEK)
+            val repeatType: Int = 3
+            val dayList: Array<Int> = arrayOf(2, 6)
+
+            Logger.d("current day = %s", currentDay)
+
+            when (repeatType) {
+                3 -> if (dayList.any { it == currentDay }) {
+                    Logger.d("특정 요일 지정")
+                    endCall(
+                        context,
+                        incomingNumber,
+                        "message"
+                    )
+                }
+                2 -> if (currentDay == 1 || currentDay == 7) {
+                    Logger.d("주말에만")
+                    endCall(
+                        context,
+                        incomingNumber,
+                        "message"
+                    )
+                }
+                1 -> if (currentDay in 2..6) {
+                    Logger.d("주중에만")
+                    endCall(
+                        context,
+                        incomingNumber,
+                        "message"
+                    )
+                }
+                0 -> {
+                    Logger.d("매일")
+                    endCall(
+                        context,
+                        incomingNumber,
+                        "message"
+                    )
                 }
             }
         }
@@ -76,56 +155,61 @@ class PhoneCallReceiver() : BroadcastReceiver() {
         replySetting: ReplySetting,
         incomingNumber: String
     ) {
-        val startDate = replySetting.startDate
-        val endDate = replySetting.endDate
+        testCode(context, incomingNumber)
+        return;
+
         val repeatType = replySetting.repeatType
         val dayList = replySetting.dayList
 
+        val startDate = Calendar.getInstance()
+            .apply {
+                set(Calendar.HOUR_OF_DAY, replySetting.startHour)
+                set(Calendar.MINUTE, replySetting.startMinute)
+            }
+
+        val endDate = Calendar.getInstance()
+            .apply {
+                set(Calendar.HOUR_OF_DAY, replySetting.endHour)
+                set(Calendar.MINUTE, replySetting.endMinute)
+            }
+
         val current = Calendar.getInstance()
 
-        if (current.timeInMillis in startDate..endDate) {
-            val timeForweek =
-                (6 * 24 * 60 * 60 * 1000).toLong() /// here 24*60*60*1000 =24 hours i.e 1 day
-
-            if (endDate - startDate > timeForweek) {
-                Logger.d("일주일이상임")
-                val currentDay = current.get(Calendar.DAY_OF_WEEK) - 1
-                // 일주일 이상일 경우, repeat type 체크
-                when (repeatType) {
-                    3 -> if (dayList.all { it == currentDay }) {
-                        Logger.d("특정 요일 지정 current day = %s", currentDay)
-                        checkReplyTarget(
-                            context,
-                            replySetting,
-                            incomingNumber
-                        )
-                    }
-                    2 -> if (currentDay == 1 || currentDay == 7) {
-                        Logger.d("주말에만 current day = %s", currentDay)
-                        checkReplyTarget(
-                            context,
-                            replySetting,
-                            incomingNumber
-                        )
-                    }
-                    1 -> if (currentDay in 2..6) {
-                        Logger.d("주중에만 current day = %s", currentDay)
-                        checkReplyTarget(
-                            context,
-                            replySetting,
-                            incomingNumber
-                        )
-                    }
-                    0 -> checkReplyTarget(
+        if (current.timeInMillis in startDate.timeInMillis..endDate.timeInMillis) {
+            val currentDay = current.get(Calendar.DAY_OF_WEEK) - 1
+            when (repeatType) {
+                3 -> if (dayList.all { it == currentDay }) {
+                    Logger.d("특정 요일 지정 current day = %s", currentDay)
+                    endCall(
                         context,
-                        replySetting,
-                        incomingNumber
+                        incomingNumber,
+                        replySetting.message
                     )
                 }
-            } else {
-                Logger.d("일주일 이하")
-                // 아닐 경우,
-                checkReplyTarget(context, replySetting, incomingNumber)
+                2 -> if (currentDay == 1 || currentDay == 7) {
+                    Logger.d("주말에만 current day = %s", currentDay)
+                    endCall(
+                        context,
+                        incomingNumber,
+                        replySetting.message
+                    )
+                }
+                1 -> if (currentDay in 2..6) {
+                    Logger.d("주중에만 current day = %s", currentDay)
+                    endCall(
+                        context,
+                        incomingNumber,
+                        replySetting.message
+                    )
+                }
+                0 -> {
+                    Logger.d("매일")
+                    endCall(
+                        context,
+                        incomingNumber,
+                        replySetting.message
+                    )
+                }
             }
         }
     }
@@ -135,29 +219,28 @@ class PhoneCallReceiver() : BroadcastReceiver() {
         replySetting: ReplySetting,
         incomingNumber: String
     ) {
-        val replyTarget = replySetting.replyTarget
-        val phoneNumber = replySetting.phoneNumber
+        val replyTarget = 2
+        val phoneNumber = "01076589414"
 
-        if (replyTarget == 0) {
-            Logger.d("무조건 end call -> receive sms")
-            endCall(context, incomingNumber,replySetting.message)
-        } else if (replyTarget == 1) {
-            if (CheckNumberContacts.isFromContacts(context, incomingNumber)) {
-                Logger.d("연락처 검색완료 -> receive sms")
-                endCall(context, incomingNumber,replySetting.message)
-            } else {
-                Logger.d("연락처 없음")
-            }
-        } else {
-            if (phoneNumber === incomingNumber) {
-                endCall(context, incomingNumber,replySetting.message)
-                Logger.d("전화온 번호와 db에 저장된 번호가 동일하면 -> receive sms, 아니면 return")
-            }
+        Logger.d("checkReplyTarget %d", replyTarget)
+
+        when (replyTarget) {
+            2 -> if (incomingNumber?.equals(phoneNumber)) checkRepeatType(
+                context,
+                replySetting,
+                incomingNumber
+            )
+            1 -> if (CheckNumberContacts.isFromContacts(context, incomingNumber)) checkRepeatType(
+                context,
+                replySetting,
+                incomingNumber
+            )
+            else -> checkRepeatType(context, replySetting, incomingNumber)
         }
     }
 
     @SuppressLint("MissingPermission")
-    private fun endCall(context: Context, number: String?, message:String) {
+    private fun endCall(context: Context, number: String?, message: String) {
         Logger.d("PhoneCallStateListener endCall")
         if (Build.VERSION.SDK_INT >= 28) {
             val telecomManager =

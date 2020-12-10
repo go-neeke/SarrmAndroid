@@ -43,7 +43,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/common_margin"
-            app:replySettingViewModel="@{replySettingViewModel}"
-            android:visibility="@{replySettingViewModel.isOverWeek ? View.VISIBLE : View.GONE}" />
+            app:replySettingViewModel="@{replySettingViewModel}" />
     </LinearLayout>
 </layout>

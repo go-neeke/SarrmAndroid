@@ -11,6 +11,7 @@ import android.os.Build
 import android.os.IBinder
 import androidx.annotation.RequiresApi
 import com.android.sarrm.R
+import com.android.sarrm.view.activities.MainActivity
 import com.orhanobut.logger.Logger
 
 class RestartService : Service() {
@@ -58,8 +59,11 @@ class RestartService : Service() {
         startForeground(NOTIFICATION_ID, foregroundNoti)
 
         // 실제 서비스는 startService로 실행
-        startService(Intent(this, PhoneCallService::class.java))
+//        startService(Intent(this, PhoneCallService::class.java))
 
+        val i = Intent(this, MainActivity::class.java)
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(i)
 
         Logger.d("startService PhoneCallService")
 

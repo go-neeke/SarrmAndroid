@@ -52,11 +52,15 @@ class DateTimePicker(
         get() {
             val linearMatchWrap = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT
+                LinearLayout.LayoutParams.WRAP_CONTENT
             )
             val linearWrapWrap = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+            val relativeWrapWrap = RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.MATCH_PARENT
             )
             val frameMatchWrap = FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT,
@@ -69,7 +73,6 @@ class DateTimePicker(
             val linearMain = LinearLayout(activity)
             linearMain.layoutParams = linearMatchWrap
             linearMain.orientation = LinearLayout.VERTICAL
-            linearMain.gravity = Gravity.CENTER
 
             val linearChild = LinearLayout(activity)
             linearChild.layoutParams = linearWrapWrap
@@ -105,14 +108,15 @@ class DateTimePicker(
             viewSwitcher!!.layoutParams = frameMatchWrap
 
             datePicker = CalendarView(activity!!)
-            timePicker = TimePicker(activity, null, R.style.MyDatePicker)
+            timePicker = TimePicker(activity)
+            timePicker!!.setIs24HourView(true)
             hideKeyboardInputInTimePicker(
                 activity?.resources?.configuration?.orientation!!,
                 timePicker!!
             )
 
             timePicker!!.setOnTimeChangedListener { view, hourOfDay, minute ->
-                // updateTime(hourOfDay, minute)
+//                 updateTime(hourOfDay, minute)
             }
 
             datePicker!!.setOnDateChangeListener { datePicker, year, month, dayOfMonth ->
@@ -123,8 +127,18 @@ class DateTimePicker(
                 )
             }
 
-            viewSwitcher!!.addView(timePicker)
-            viewSwitcher!!.addView(datePicker)
+            val datePickerParent = RelativeLayout(activity)
+            datePickerParent.layoutParams = relativeWrapWrap
+            datePickerParent.gravity = Gravity.CENTER
+            datePickerParent.addView(datePicker)
+
+            val timePickerParent = RelativeLayout(activity)
+            timePickerParent.layoutParams = relativeWrapWrap
+            timePickerParent.gravity = Gravity.CENTER
+            timePickerParent.addView(timePicker)
+
+            viewSwitcher!!.addView(datePickerParent)
+            viewSwitcher!!.addView(timePickerParent)
 
             val linearBottom = LinearLayout(activity)
             linearBottom.layoutParams = linearMatchWrap
@@ -164,27 +178,27 @@ class DateTimePicker(
         }
 
     private fun updateTime(hourOfDay: Int, minute: Int) {
-        if (minTimeInMinute != null) {
-            val calendar = Calendar.getInstance()
-            calendar.set(
-                selectedYear,
-                selectedMonth,
-                selectedDayOfMonth,
-                hourOfDay,
-                minute
-            )
-
-            if (calendar.timeInMillis - Calendar.getInstance().timeInMillis >= minTimeInMinute!! * 60 * 1000) {
-                selectedHour = hourOfDay
-                selectedMinute = minute
-            } else {
-                selectedHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
-                selectedMinute = Calendar.getInstance().get(Calendar.MINUTE) + minTimeInMinute!!
-            }
-        } else {
+//        if (minTimeInMinute != null) {
+//            val calendar = Calendar.getInstance()
+//            calendar.set(
+//                selectedYear,
+//                selectedMonth,
+//                selectedDayOfMonth,
+//                hourOfDay,
+//                minute
+//            )
+//
+//            if (calendar.timeInMillis - Calendar.getInstance().timeInMillis >= minTimeInMinute!! * 60 * 1000) {
+//                selectedHour = hourOfDay
+//                selectedMinute = minute
+//            } else {
+//                selectedHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+//                selectedMinute = Calendar.getInstance().get(Calendar.MINUTE) + minTimeInMinute!!
+//            }
+//        } else {
             selectedHour = hourOfDay
             selectedMinute = minute
-        }
+//        }
 
         updateDisplayedTime()
     }
@@ -357,7 +371,7 @@ class DateTimePicker(
                 btnSetDate!!.setTextColor(ContextCompat.getColor(activity!!, R.color.colorPrimary))
                 btnSetTime!!.setTextColor(ContextCompat.getColor(activity!!, R.color.colorBlack))
 
-                if (viewSwitcher!!.currentView !== datePicker) {
+                if (viewSwitcher!!.displayedChild !== 0) {
                     viewSwitcher!!.showPrevious()
                 }
             }
@@ -368,7 +382,7 @@ class DateTimePicker(
                 btnSetDate!!.setTextColor(ContextCompat.getColor(activity!!, R.color.colorBlack))
                 btnSetTime!!.setTextColor(ContextCompat.getColor(activity!!, R.color.colorPrimary))
 
-                if (viewSwitcher!!.currentView === datePicker) {
+                if (viewSwitcher!!.displayedChild !== 1) {
                     viewSwitcher!!.showNext()
                 }
             }
@@ -387,8 +401,9 @@ class DateTimePicker(
                         selectedHour,
                         selectedMinute
                     )
+
                     iCustomDateTimeListener!!.onSet(dateSelected = calendarDate!!.time)
-                    Logger.d("Calendar pick %s", datePicker?.getDate().toString())
+                    Logger.d("Calendar pick %d %d", selectedHour,selectedMinute)
                 }
                 if (dialog.isShowing && isAutoDismiss)
                     dialog.dismiss()

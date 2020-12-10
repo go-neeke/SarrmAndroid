@@ -5,6 +5,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorPrimary</item>
+<!--        <item name="android:timePickerDialogTheme">@style/MyTimePickerDialogStyle</item>-->
     </style>
 
     <style name="CustomShapeAppearanceOverlay.StartButton" parent="">
@@ -29,7 +30,16 @@
         <item name="cornerSizeBottomRight">0dp</item>
     </style>
 
-    <style name="MyDatePicker" >
+    <style name="MyTimePickerDialogStyle" parent="@style/ThemeOverlay.AppCompat.Dialog.Alert">
+        <item name="showTitle">false</item>
+        <item name="colorControlActivated">#ffd600</item>
+        <item name="colorAccent">#b71c1c</item>
+        <item name="android:textColorPrimary">#43a047</item>
+        <item name="android:textColorSecondary">#f44336</item>
+        <item name="android:timePickerMode">spinner</item>
+
+    </style>
+    <style name="MyDatePicker" parent="Theme.AppCompat.Light.Dialog">
         <item name="colorPrimary">#ffffff</item>
         <item name="android:timePickerMode">spinner</item>
     </style>
