@@ -23,6 +23,7 @@ import com.android.sarrm.application.SarrmApplication
 import com.android.sarrm.receiver.AlarmReceiver
 import com.android.sarrm.listener.PhoneCallStateListener
 import com.android.sarrm.view.activities.MainActivity
+import com.orhanobut.logger.Logger
 import java.util.*
 
 
@@ -30,7 +31,7 @@ class PhoneCallService() : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        Log.e(TAG, "onCreate")
+        Logger.d( "onCreate")
         regsterPhoneCallService()
         val timer = Timer()
         timer.schedule(timeTask, 0, 20000)
@@ -46,7 +47,7 @@ class PhoneCallService() : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.e(TAG, "onDestroy")
+        Logger.d("onDestroy")
         timeTask.cancel()
         // 서비스 종료 시 1초 뒤 알람이 실행되도록 호출
         setAlarmTimer()
@@ -58,7 +59,7 @@ class PhoneCallService() : Service() {
         c.add(Calendar.SECOND, 1)
         val intent = Intent(this, AlarmReceiver::class.java)
         val sender = PendingIntent.getBroadcast(this, 0, intent, 0)
-
+        Logger.d("setAlarmTimer")
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarmManager.set(AlarmManager.RTC_WAKEUP, c.timeInMillis, sender)
     }
@@ -68,7 +69,7 @@ class PhoneCallService() : Service() {
     }
 
     private fun regsterPhoneCallService() {
-        Log.e(TAG, "regsterPhoneCallService")
+        Logger.d( "regsterPhoneCallService")
         val callDetactor = PhoneCallStateListener(this)
         val telephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
         telephonyManager.listen(callDetactor, PhoneStateListener.LISTEN_CALL_STATE);
@@ -98,7 +99,7 @@ class PhoneCallService() : Service() {
             whiteCheck = powerManager.isIgnoringBatteryOptimizations(packageName)
             /** 만약 화이트리스트에 등록이 되지않았다면 등록을 해줍니다.  */
             if (!whiteCheck) {
-                Log.e("화이트리스트", "화이트리스트에 등록 실행")
+                Logger.d("화이트리스트", "화이트리스트에 등록 실행")
                 val intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
                 intent.data = Uri.parse("package:$packageName")
                 SarrmApplication.getInstance().applicationContext.startActivity(intent.addFlags(FLAG_ACTIVITY_NEW_TASK))
@@ -113,7 +114,7 @@ class PhoneCallService() : Service() {
 //                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 //                    .setFullScreenIntent(fullScreenPendingIntent, true)
 //                builder.build()
-            } else Log.e("화이트리스트", "화이트리스트에 등록되어져 있습니다.")
+            } else Logger.d("화이트리스트에 등록되어져 있습니다.")
         }
     }
 }

@@ -11,6 +11,7 @@ import android.os.Build
 import android.os.IBinder
 import androidx.annotation.RequiresApi
 import com.android.sarrm.R
+import com.orhanobut.logger.Logger
 
 class RestartService : Service() {
     private val NOTIFICATION_ID = 847789
@@ -38,6 +39,8 @@ class RestartService : Service() {
                 ""
             }
 
+        Logger.d("channelId %s",channelId)
+
         val builder: Notification.Builder =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 Notification.Builder(this, channelId)
@@ -56,6 +59,9 @@ class RestartService : Service() {
 
         // 실제 서비스는 startService로 실행
         startService(Intent(this, PhoneCallService::class.java))
+
+
+        Logger.d("startService PhoneCallService")
 
         // RestartService를 종료
         stopForeground(true)

@@ -8,6 +8,7 @@ import android.text.TextUtils
 import android.util.Log
 import com.android.sarrm.service.PhoneCallService
 import com.android.sarrm.service.RestartService
+import com.orhanobut.logger.Logger
 
 class BootCompletedReceiver : BroadcastReceiver() {
 
@@ -18,14 +19,14 @@ class BootCompletedReceiver : BroadcastReceiver() {
         // This method is called when the BroadcastReceiver is receiving an Intent broadcast.
         val action = intent.action
 
-        Log.e(TAG, "Receive ACTION $action")
+        Logger.d( "Receive ACTION")
         if (action == null) {
-            Log.e(TAG, "action is null")
+            Logger.d( "action is null")
             return
         }
 
         if (TextUtils.equals(action, Intent.ACTION_BOOT_COMPLETED)) {
-            Log.e(TAG, "boot complete received")
+            Logger.d( "boot complete received")
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 context.startForegroundService(Intent(context, RestartService::class.java))

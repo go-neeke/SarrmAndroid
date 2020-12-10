@@ -6,6 +6,7 @@ import android.app.ActivityManager
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
@@ -27,6 +28,7 @@ import kotlinx.android.synthetic.main.layout_menu_reply_target.*
 import java.text.SimpleDateFormat
 import java.util.*
 import android.provider.ContactsContract
+import com.android.sarrm.receiver.PhoneCallReceiver
 import com.android.sarrm.utils.CheckNumberContacts
 
 
@@ -42,7 +44,8 @@ class MainActivity : AppCompatActivity() {
         Manifest.permission.READ_CALL_LOG,
         Manifest.permission.READ_CONTACTS,
         Manifest.permission.RECEIVE_SMS,
-        Manifest.permission.SEND_SMS
+        Manifest.permission.SEND_SMS,
+        Manifest.permission.SYSTEM_ALERT_WINDOW
     )
     val PERMISSIONS_AFTER_P = arrayOf(
         Manifest.permission.ANSWER_PHONE_CALLS,
@@ -52,8 +55,10 @@ class MainActivity : AppCompatActivity() {
         Manifest.permission.READ_CONTACTS,
         Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
         Manifest.permission.RECEIVE_SMS,
-        Manifest.permission.SEND_SMS
+        Manifest.permission.SEND_SMS,
+        Manifest.permission.SYSTEM_ALERT_WINDOW
     )
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,6 +70,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkPermissions() {
+        Logger.d("checkPermissions")
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             // broadcastReceiver 등록
             startPhoneCallService()
@@ -73,9 +79,12 @@ class MainActivity : AppCompatActivity() {
                 || checkSelfPermission(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_DENIED
                 || checkSelfPermission(Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_DENIED
                 || checkSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_DENIED
-                || checkSelfPermission(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_DENIED
+                || checkSelfPermission(Manifest.permission.READ_SMS) == PackageManager.PERMISSION_DENIED
+                || checkSelfPermission(Manifest.permission.SYSTEM_ALERT_WINDOW) == PackageManager.PERMISSION_DENIED
             )
                 requestPermissions(PERMISSIONS_PHONE_BEFORE_P, PERMISSION_REQ_CODE)
+            else if (!Settings.canDrawOverlays(this))
+                checkDrawOverlayPermission()
             else {
                 // broadcastReceiver 등록
                 startPhoneCallService()
@@ -86,10 +95,13 @@ class MainActivity : AppCompatActivity() {
                 || checkSelfPermission(Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_DENIED
                 || checkSelfPermission(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_DENIED
                 || checkSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_DENIED
-                || checkSelfPermission(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_DENIED
+                || checkSelfPermission(Manifest.permission.READ_SMS) == PackageManager.PERMISSION_DENIED
                 || checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_DENIED
+                || checkSelfPermission(Manifest.permission.SYSTEM_ALERT_WINDOW) == PackageManager.PERMISSION_DENIED
             )
                 requestPermissions(PERMISSIONS_AFTER_P, PERMISSION_REQ_CODE)
+            else if (!Settings.canDrawOverlays(this))
+                checkDrawOverlayPermission()
             else {
                 // broadcastReceiver 등록
                 startPhoneCallService()
@@ -98,14 +110,22 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
     private fun startPhoneCallService() {
-        val serviceClass = PhoneCallService::class.java
-        mIntent = Intent(applicationContext, serviceClass)
-        if (!this.isServiceRunning(serviceClass)) {
-            // App 실행 시 서비스(GpsService) 시작
-            // App 실행 시 foreground 이므로 startService 로 호출
-            startService(mIntent)
-        }
+        Logger.d("startPhoneCallService")
+//        this.registerReceiver(
+//            PhoneCallReceiver(),
+//            IntentFilter("android.intent.action.PHONE_STATE")
+//        )
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    fun checkDrawOverlayPermission() {
+        val intent = Intent(
+            Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+            Uri.parse("package:$packageName")
+        )
+        startActivityForResult(intent, 12345)
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -129,7 +149,8 @@ class MainActivity : AppCompatActivity() {
                         if ((checkSelfPermission(Manifest.permission.SYSTEM_ALERT_WINDOW) == PackageManager.PERMISSION_DENIED)
                             || (!Settings.canDrawOverlays(this))
                         )
-                            startPhoneCallService()
+                            checkDrawOverlayPermission()
+                        else startPhoneCallService()
 
                 } else {
 //                    Toast.makeText(this, getString(R.string.permission_not_granted), Toast.LENGTH_SHORT).show();
@@ -141,6 +162,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        Logger.d("onDestroy")
         try {
             stopService(mIntent)
         } catch (e: UninitializedPropertyAccessException) {
@@ -154,7 +176,7 @@ fun Context.isServiceRunning(serviceClass: Class<*>): Boolean {
 
     for (service in activityManager.getRunningServices(Integer.MAX_VALUE)) {
         if (serviceClass.name == service.service.className) {
-            Log.e("isServiceRunning", "Service is running")
+            Logger.d("isServiceRunning", "Service is running")
             return true
         }
     }

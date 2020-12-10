@@ -13,6 +13,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
 
     <application
         android:name=".application.SarrmApplication"
@@ -51,21 +52,30 @@
             android:exported="true">
         </receiver>
 
-        <service
-            android:name=".service.RestartService"
-            android:enabled="true"
-            android:exported="true">
-        </service>
-
-        <service
-            android:name=".service.PhoneCallService"
+        <receiver
+            android:name=".receiver.PhoneCallReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.PHONE_STATE" />
-                <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
             </intent-filter>
-        </service>
+        </receiver>
+
+<!--        <service-->
+<!--            android:name=".service.RestartService"-->
+<!--            android:enabled="true"-->
+<!--            android:exported="true">-->
+<!--        </service>-->
+
+<!--        <service-->
+<!--            android:name=".service.PhoneCallService"-->
+<!--            android:enabled="true"-->
+<!--            android:exported="true">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.PHONE_STATE" />-->
+<!--                <action android:name="android.intent.action.NEW_OUTGOING_CALL" />-->
+<!--            </intent-filter>-->
+<!--        </service>-->
     </application>
 
 </manifest>
