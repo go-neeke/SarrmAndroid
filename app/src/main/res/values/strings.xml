@@ -11,7 +11,7 @@
     <string name="title_menu_reply_message">응답 메시지</string>
 
     <string name="hint_menu_name">설정 이름을 입력해주세요</string>
-    <string name="hint_menu_reply_message">남기실 응답 메시지를 입력해주세요</string>
+    <string name="hint_menu_reply_message">남기실 응답 메시지를 입력해주세요\n입력하지 않으면 기본 메시지로 전송됩니다.</string>
     <string name="hint_menu_phoneNumber">핸드폰 번호를 입력해주세요</string>
 
     <string name="button_text_save">저 장</string>

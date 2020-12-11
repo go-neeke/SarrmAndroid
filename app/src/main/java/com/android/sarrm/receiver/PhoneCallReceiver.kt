@@ -19,6 +19,7 @@ import android.telecom.TelecomManager
 import android.telephony.PhoneStateListener
 import android.telephony.SmsManager
 import android.telephony.TelephonyManager
+import android.text.TextUtils
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.android.sarrm.R
@@ -155,27 +156,38 @@ class PhoneCallReceiver() : BroadcastReceiver() {
         replySetting: ReplySetting,
         incomingNumber: String
     ) {
-        testCode(context, incomingNumber)
-        return;
+//        testCode(context, incomingNumber)
+//        return;
 
         val repeatType = replySetting.repeatType
         val dayList = replySetting.dayList
 
-        val startDate = Calendar.getInstance()
+        val startTime = Calendar.getInstance()
             .apply {
                 set(Calendar.HOUR_OF_DAY, replySetting.startHour)
                 set(Calendar.MINUTE, replySetting.startMinute)
             }
 
-        val endDate = Calendar.getInstance()
+        val endTime = Calendar.getInstance()
             .apply {
                 set(Calendar.HOUR_OF_DAY, replySetting.endHour)
                 set(Calendar.MINUTE, replySetting.endMinute)
             }
 
         val current = Calendar.getInstance()
+//            .apply {
+//                set(Calendar.HOUR_OF_DAY, 16)
+//                set(Calendar.MINUTE, 5)
+//            }
 
-        if (current.timeInMillis in startDate.timeInMillis..endDate.timeInMillis) {
+        Logger.d("current.timeInMillis %d",current.timeInMillis)
+        Logger.d("replySetting.startDate %d",replySetting.startDate)
+        Logger.d("replySetting.endDate %d",replySetting.endDate)
+        Logger.d("startTime.timeInMillis %d",startTime.timeInMillis)
+        Logger.d("endTime.timeInMillis %d",endTime.timeInMillis)
+
+        if (current.timeInMillis in replySetting.startDate..replySetting.endDate
+            && current.timeInMillis in startTime.timeInMillis..endTime.timeInMillis) {
             val currentDay = current.get(Calendar.DAY_OF_WEEK) - 1
             when (repeatType) {
                 3 -> if (dayList.all { it == currentDay }) {
@@ -219,8 +231,8 @@ class PhoneCallReceiver() : BroadcastReceiver() {
         replySetting: ReplySetting,
         incomingNumber: String
     ) {
-        val replyTarget = 2
-        val phoneNumber = "01076589414"
+        val replyTarget = replySetting.replyTarget
+        val phoneNumber = replySetting.phoneNumber
 
         Logger.d("checkReplyTarget %d", replyTarget)
 
@@ -254,7 +266,11 @@ class PhoneCallReceiver() : BroadcastReceiver() {
             telephonyService.endCall()
         }
 
-        val messageStr = "hey, this is my message";
+        Logger.d("message.isNullOrEmpty() %s",TextUtils.isEmpty(message).toString())
+
+        val messageStr = if (TextUtils.isEmpty(message) || message.equals("null")) "지금은 전화를 받을 수 없습니다. 잠시 후 전화드리겠습니다." else message
+        Logger.d("messageStr %s",messageStr)
+
 
         Logger.d("endCall send SMS 11 %s", number)
         try {

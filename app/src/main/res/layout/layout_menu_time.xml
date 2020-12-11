@@ -29,6 +29,14 @@
             android:layout_height="wrap_content"
             app:titleName="@{titleName}" />
 
+        <!-- 요일 설정 -->
+        <include
+            layout="@layout/layout_setting_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/common_margin"
+            app:replySettingViewModel="@{replySettingViewModel}" />
+
         <!-- 시간 설정 -->
         <include
             layout="@layout/layout_setting_time"
@@ -37,12 +45,13 @@
             android:layout_marginTop="@dimen/common_margin"
             app:replySettingViewModel="@{replySettingViewModel}" />
 
-        <!-- 요일 설정 -->
+        <!-- 반복 설정 -->
         <include
-            layout="@layout/layout_setting_date"
+            layout="@layout/layout_setting_repeat_type"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/common_margin"
+            android:visibility="@{replySettingViewModel.isOverWeek ? View.VISIBLE : View.GONE}"
             app:replySettingViewModel="@{replySettingViewModel}" />
     </LinearLayout>
 </layout>

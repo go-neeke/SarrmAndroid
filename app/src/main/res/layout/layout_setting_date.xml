@@ -4,38 +4,39 @@
 
     <data>
 
-        <import type="android.view.View" />
-
         <variable
             name="replySettingViewModel"
             type="com.android.sarrm.view.models.ReplySettingViewModel" />
     </data>
 
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:background="@drawable/round_outline"
+        android:layout_height="match_parent"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
-        <!-- 반복 타입 설정 -->
-        <RadioGroup
+        <!-- Start Date -->
+        <com.google.android.material.button.MaterialButton
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:orientation="horizontal"
-            app:onSelectedSpecificDayListener="@{replySettingViewModel.onSelectedSpecificDayListener}"
-            app:radioList="@{replySettingViewModel.repeatTypeList}" />
+            android:layout_weight="1"
+            android:onClick="@{() -> replySettingViewModel.openDatePicker(1)}"
+            android:paddingVertical="@dimen/common_margin"
+            android:text="@={replySettingViewModel.startDateString}"
+            app:shapeAppearanceOverlay="@style/CustomShapeAppearanceOverlay.StartButton" />
 
-        <com.google.android.material.chip.ChipGroup
+        <!-- End Date -->
+        <com.google.android.material.button.MaterialButton
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:visibility="@{replySettingViewModel.isSelsectedSpecificDay ? View.VISIBLE : View.GONE}"
-            app:chipList="@{replySettingViewModel.dateList}"
-            app:chipSpacingHorizontal="2dp"
-            app:singleSelection="false" />
-
+            android:layout_weight="1"
+            android:onClick="@{() -> replySettingViewModel.openDatePicker(2)}"
+            android:paddingVertical="@dimen/common_margin"
+            android:text="@={replySettingViewModel.endDateString}"
+            app:shapeAppearanceOverlay="@style/CustomShapeAppearanceOverlay.EndButton" />
     </LinearLayout>
+
 </layout>

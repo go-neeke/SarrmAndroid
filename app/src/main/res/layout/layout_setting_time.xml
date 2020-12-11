@@ -22,9 +22,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:onClick="@{() -> replySettingViewModel.openDateTimePicker(1)}"
+            android:onClick="@{() -> replySettingViewModel.openTimePicker(1)}"
             android:paddingVertical="@dimen/common_margin"
-            android:text="@={replySettingViewModel.startDateString}"
+            android:text="@={replySettingViewModel.startTimeString}"
             app:shapeAppearanceOverlay="@style/CustomShapeAppearanceOverlay.StartButton" />
 
         <!-- End Date -->
@@ -33,9 +33,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:onClick="@{() -> replySettingViewModel.openDateTimePicker(2)}"
+            android:onClick="@{() -> replySettingViewModel.openTimePicker(2)}"
             android:paddingVertical="@dimen/common_margin"
-            android:text="@={replySettingViewModel.endDateString}"
+            android:text="@={replySettingViewModel.endTimeString}"
             app:shapeAppearanceOverlay="@style/CustomShapeAppearanceOverlay.EndButton" />
     </LinearLayout>
 
