@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:visibility="@{replySettingViewModel.isSelsectedSpecificDay ? View.VISIBLE : View.GONE}"
-            app:chipList="@{replySettingViewModel.dateList}"
+            app:chipList="@{replySettingViewModel.dayList}"
             app:chipSpacingHorizontal="2dp"
             app:singleSelection="false" />
 

@@ -6,12 +6,6 @@
         android:width="@dimen/outline_stroke_width"
         android:color="@color/outline_color" />
 
-    <padding
-        android:bottom="@dimen/outline_padding_vertical"
-        android:left="@dimen/outline_padding_horizontal"
-        android:right="@dimen/outline_padding_horizontal"
-        android:top="@dimen/outline_padding_vertical" />
-
     <corners
         android:bottomLeftRadius="@dimen/outline_radius"
         android:bottomRightRadius="@dimen/outline_radius"

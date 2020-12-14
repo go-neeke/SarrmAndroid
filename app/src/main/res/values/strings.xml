@@ -14,6 +14,7 @@
     <string name="hint_menu_reply_message">남기실 응답 메시지를 입력해주세요\n입력하지 않으면 기본 메시지로 전송됩니다.</string>
     <string name="hint_menu_phoneNumber">핸드폰 번호를 입력해주세요</string>
 
+    <string name="button_text_delete">삭 제</string>
     <string name="button_text_save">저 장</string>
 
     <!-- Date Time -->
@@ -28,13 +29,13 @@
     <string name="only_weekend">주말에만</string>
 
     <string-array name="setting_date_array">
-        <item name="sunday">일</item>
         <item name="monday">월</item>
         <item name="tuesday">화</item>
         <item name="wednesday">수</item>
         <item name="thursday">목</item>
         <item name="friday">금</item>
         <item name="saturday">토</item>
+        <item name="sunday">일</item>
     </string-array>
 
     <!-- 응답 대상 -->

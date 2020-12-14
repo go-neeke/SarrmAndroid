@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="replySetting"
+            type="com.android.sarrm.data.models.ReplySetting" />
+
+        <variable
+            name="clickListener"
+            type="com.android.sarrm.view.adapters.ClickListener" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/common_margin"
+        android:clickable="true"
+        android:onClick="@{() -> clickListener.onClick(replySetting)}">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal|center_vertical"
+            android:paddingHorizontal="@dimen/common_margin">
+
+
+
+            <ImageView
+                android:id="@+id/item_logo"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/img_logo_sarrm" />
+
+            <TextView
+                android:id="@+id/item_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{replySetting.name}"
+                android:textSize="24sp"
+                app:layout_constraintLeft_toRightOf="@id/item_logo"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <TextView
+                android:id="@+id/item_replyTarget"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="111"
+                android:textSize="24sp"
+                app:layout_constraintLeft_toRightOf="@id/item_logo"
+                app:layout_constraintTop_toBottomOf="@id/item_name"
+                app:layout_constraintVertical_bias="0.0" />
+            <TextView
+                android:id="@+id/item_phoneNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{replySetting.phoneNumber}"
+                android:textSize="24sp"
+                app:layout_constraintLeft_toRightOf="@id/item_logo"
+                app:layout_constraintTop_toBottomOf="@id/item_replyTarget"
+                app:layout_constraintVertical_bias="0.0" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+</layout>

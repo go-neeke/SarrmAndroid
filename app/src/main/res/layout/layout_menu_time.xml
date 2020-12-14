@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             app:titleName="@{titleName}" />
 
-        <!-- 요일 설정 -->
+        <!-- 날짜 설정 -->
         <include
             layout="@layout/layout_setting_date"
             android:layout_width="match_parent"
@@ -42,7 +42,6 @@
             layout="@layout/layout_setting_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/common_margin"
             app:replySettingViewModel="@{replySettingViewModel}" />
 
         <!-- 반복 설정 -->

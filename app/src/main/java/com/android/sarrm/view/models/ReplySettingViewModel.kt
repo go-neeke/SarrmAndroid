@@ -3,29 +3,45 @@ package com.android.sarrm.view.models
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.os.Build
 import android.view.View
 import android.widget.AdapterView
 import android.widget.CompoundButton
 import android.widget.Toast
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.annotation.RequiresApi
+import androidx.lifecycle.*
 import com.android.sarrm.R
 import com.android.sarrm.converts.ViewConverter
+import com.android.sarrm.data.db.ReplySettingRealmDao
 import com.android.sarrm.data.models.DateModel
 import com.android.sarrm.data.models.RepeatType
 import com.android.sarrm.data.models.ReplySetting
-import io.realm.Realm
-import java.util.*
 import com.orhanobut.logger.Logger
+import io.realm.Realm
+import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.LocalTime
+import java.util.*
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 class ReplySettingViewModel(
-    private val activity: Activity
+    private val activity: Activity,
 ) : ViewModel() {
 
     val realm: Realm by lazy {
         Realm.getDefaultInstance()
     }
+
+    val realmDao = ReplySettingRealmDao(realm)
+
+    private var replySettingId: String? = null
+
+    private val _navigateToReplySettingList = MutableLiveData<Boolean>()
+    val navigateToReplySettingList: LiveData<Boolean>
+        get() = _navigateToReplySettingList
+
+    val isExistReplySetting = MutableLiveData<Boolean>()   // 특정요일
 
     // Two-way databinding, exposing MutableLiveData
     val name = MutableLiveData<String>()    // 설정이름
@@ -36,38 +52,36 @@ class ReplySettingViewModel(
     val isSelsectedSpecificDay = MutableLiveData<Boolean>()   // 특정요일
     val isOverWeek = MutableLiveData<Boolean>()
 
-    var startDate = Date()
-    val startDateString = MutableLiveData<String>().default(ViewConverter.dateToString(startDate))
+    var startLocalDate = LocalDate.now()
+    val startDateString =
+        MutableLiveData<String>().default(ViewConverter.dateToString(startLocalDate))
 
-    var endDate = Date()
-    val endDateString = MutableLiveData<String>().default(ViewConverter.dateToString(endDate))
+    var endLocalDate = LocalDate.now()
+    val endDateString = MutableLiveData<String>().default(ViewConverter.dateToString(endLocalDate))
 
-    val calendar: Calendar = Calendar.getInstance()
-
-    var startHour = calendar.get(Calendar.HOUR_OF_DAY)
-    var startMinute = calendar.get(Calendar.MINUTE)
-    var endHour = startHour + 1
-    var endMinute = startMinute
+    var startLocalTime = LocalTime.now()
+    var endLocalTime = startLocalTime.plusHours(1)
 
     val startTimeString = MutableLiveData<String>().default(
         String.format(
             "%s : %d",
-            ViewConverter.getAMPM(startHour),
-            startMinute
+            ViewConverter.getAMPM(startLocalTime.hour),
+            startLocalTime.minute
         )
     )
     val endTimeString = MutableLiveData<String>().default(
         String.format(
             "%s : %d",
-            ViewConverter.getAMPM(endHour),
-            endMinute
+            ViewConverter.getAMPM(endLocalTime.hour),
+            endLocalTime.minute
         )
     )
 
-    var dateList = getSettingDateList()
-    var repeatTypeList = getRepeatList()
+    var dayList =
+        initSettingDayList(null)
+    var repeatTypeList = initRepeatList(null)
 
-    var replyTarget: Int = 0
+    val replyTarget = MutableLiveData<Int>()
 
     override fun onCleared() {
         realm.close()
@@ -76,23 +90,89 @@ class ReplySettingViewModel(
 
     fun <T : Any?> MutableLiveData<T>.default(initialValue: T) = apply { setValue(initialValue) }
 
-    fun getSettingDateList(): MutableList<DateModel> {
-        var dateList = listOf(activity.resources.getStringArray(R.array.setting_date_array))
+
+    fun start(replySettingId: String?) {
+        this.replySettingId = replySettingId;
+
+        if (replySettingId == null) {
+            this.isExistReplySetting.value = false
+            return
+        }
+
+        viewModelScope.launch {
+            getReplySettingFromRealm(replySettingId)
+        }
+    }
+
+    private fun getReplySettingFromRealm(id: String) {
+        val replySettingData = realmDao.findReplySettingById(id)
+
+        Logger.d("getReplySettingFromRealm %s", replySettingData.toString())
+
+        this.isExistReplySetting.value = true
+
+        this.name.value = replySettingData?.name
+        this.phoneNumber.value = replySettingData?.phoneNumber
+        this.message.value = replySettingData?.message
+        this.startLocalDate =
+            LocalDate.of(
+                replySettingData?.startYear!!,
+                replySettingData?.startMonth!!,
+                replySettingData?.startDay!!
+            )
+        this.startDateString.value = ViewConverter.dateToString(startLocalDate)
+        this.endLocalDate = LocalDate.of(
+            replySettingData?.endYear!!,
+            replySettingData?.endMonth!!,
+            replySettingData?.endDay!!
+        )
+        this.endDateString.value = ViewConverter.dateToString(endLocalDate)
+        this.startLocalTime = LocalTime.of(
+            replySettingData?.startHour!!,
+            replySettingData?.startMinute!!
+        )
+        this.startTimeString.value = String.format(
+            "%s : %d",
+            ViewConverter.getAMPM(startLocalTime.hour),
+            startLocalTime.minute
+        )
+        this.endLocalTime = LocalTime.of(replySettingData?.endHour!!, replySettingData?.endMinute!!)
+        this.endTimeString.value = String.format(
+            "%s : %d",
+            ViewConverter.getAMPM(endLocalTime.hour),
+            endLocalTime.minute
+        )
+
+        this.replyTarget.value = replySettingData.replyTarget
+
+        val list: ArrayList<Int> = ArrayList()
+        list.addAll(replySettingData.dayList)
+        this.dayList = initSettingDayList(list)
+
+        this.repeatTypeList = initRepeatList(replySettingData.repeatType)
+
+        val baseLocalDate = startLocalDate.plusDays(6)
+        isOverWeek.value = endLocalDate.isAfter(baseLocalDate)
+        isSelsectedSpecificDay.value = replySettingData.dayList.isNotEmpty()
+    }
+
+    fun initSettingDayList(selectedDayList: ArrayList<Int>?): MutableList<DateModel> {
+        var dateList = activity.resources.getStringArray(R.array.setting_date_array)
         val list: MutableList<DateModel> = ArrayList()
 
-        for ((index, item) in dateList[0].withIndex()) {
-            list.add(DateModel(index + 1, item, false))
+        for ((index, item) in dateList.withIndex()) {
+            list.add(DateModel(index, item, selectedDayList?.any{it == index} ?: false))
         }
 
         return list
     }
 
-    fun getRepeatList(): MutableList<RepeatType> {
-        var typeList = listOf(activity.resources.getStringArray(R.array.repeat_type_array))
+    fun initRepeatList(selectedRepeatType: Int?): MutableList<RepeatType> {
+        var typeList = activity.resources.getStringArray(R.array.repeat_type_array)
         val list: MutableList<RepeatType> = ArrayList()
 
-        for ((index, item) in typeList[0].withIndex()) {
-            list.add(RepeatType(index, item, false))
+        for ((index, item) in typeList.withIndex()) {
+            list.add(RepeatType(index, item, if (selectedRepeatType != null) index == selectedRepeatType else index == 0))
         }
 
         return list
@@ -103,7 +183,7 @@ class ReplySettingViewModel(
         }
 
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-            replyTarget = position
+            replyTarget.value = position
             isSelectedPhoneNumber.value = position == 2     // 번호 지정 선택시 핸드폰 번호 입력란 보이도록
         }
     }
@@ -115,8 +195,8 @@ class ReplySettingViewModel(
         }
 
     fun openTimePicker(type: Int) {
-        val pickerHour = if (type == 0) startHour else endHour
-        val pickerMinute = if (type == 0) startMinute else endMinute
+        val pickerHour = if (type == 1) startLocalTime.hour else endLocalTime.hour
+        val pickerMinute = if (type == 1) startLocalTime.minute else endLocalTime.minute
         val timePickerDialog = TimePickerDialog(
             activity,
             android.R.style.Theme_Holo_Light_Dialog_NoActionBar,
@@ -125,19 +205,27 @@ class ReplySettingViewModel(
             pickerMinute,
             false
         )
-        timePickerDialog.getWindow()?.setBackgroundDrawableResource(android.R.color.transparent)
+        timePickerDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         timePickerDialog.show()
     }
 
     fun openDatePicker(type: Int) {
         val pickerYear =
-            if (type == 0) ViewConverter.getYear(startDate) else ViewConverter.getYear(endDate)
+            if (type == 1) startLocalDate.year else endLocalDate.year
         val pickerMonth =
-            if (type == 0) ViewConverter.getMonth(startDate) else ViewConverter.getMonth(endDate)
+            if (type == 1) startLocalDate.monthValue else endLocalDate.monthValue
         val pickerDay =
-            if (type == 0) ViewConverter.getDay(startDate) else ViewConverter.getDay(endDate)
+            if (type == 1) startLocalDate.dayOfMonth else endLocalDate.dayOfMonth
+
+        Logger.d(
+            "DatePicker %d, %d, %d",
+            startLocalDate.year,
+            startLocalDate.monthValue,
+            startLocalDate.dayOfMonth
+        )
         val datePickerDialog = DatePickerDialog(
             activity,
+            android.R.style.Theme_Holo_Light_Dialog_NoActionBar,
             DatePickerDialog.OnDateSetListener { datePicker, i, i2, i3 ->
                 onDateSet(
                     type,
@@ -147,11 +235,18 @@ class ReplySettingViewModel(
                 )
             },
             pickerYear,
-            pickerMonth,
+            pickerMonth - 1,
             pickerDay
         )
-        datePickerDialog.getWindow()?.setBackgroundDrawableResource(android.R.color.transparent)
+        datePickerDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         datePickerDialog.show()
+    }
+
+    fun deleteReplySetting() {
+        realmDao.deleteReplySettingById(replySettingId!!)
+        viewModelScope.launch {
+            _navigateToReplySettingList.value = true
+        }
     }
 
     fun saveReplySetting() {
@@ -160,53 +255,29 @@ class ReplySettingViewModel(
             return
         }
 
-        if (replyTarget == 2 && phoneNumber.value.isNullOrEmpty()) {
+        if (replyTarget.value == 2 && phoneNumber.value.isNullOrEmpty()) {
             Toast.makeText(activity, "특정 번호 지정시 핸드폰 입력은 필수입니다.", Toast.LENGTH_SHORT).show()
             return
         }
 
-        val startDate = Calendar.getInstance()
-            .apply {
-                set(Calendar.HOUR_OF_DAY, startHour)
-                set(Calendar.MINUTE, startMinute)
-            }
-
-        val endDate = Calendar.getInstance()
-            .apply {
-                set(Calendar.HOUR_OF_DAY, endHour)
-                set(Calendar.MINUTE, endMinute)
-            }
-
-        val timeForhour = (60 * 60 * 1000).toLong() /// here 24*60*60*1000 =24 hours i.e 1 day
-
-        val startTime = Calendar.getInstance()
-            .apply {
-                set(Calendar.HOUR_OF_DAY, startHour)
-                set(Calendar.MINUTE, startMinute)
-            }
-
-        val endTime = Calendar.getInstance()
-            .apply {
-                set(Calendar.HOUR_OF_DAY, endHour)
-                set(Calendar.MINUTE, endMinute)
-            }
-
-        if (startTime.timeInMillis > endTime.timeInMillis) {
+        if (startLocalTime.isAfter(endLocalTime)) {
             Toast.makeText(activity, "시작시간이 종료시간을 초과할 수 없습니다.", Toast.LENGTH_SHORT).show()
             return
         }
 
-        if (startTime.timeInMillis > endTime.timeInMillis - timeForhour) {
+        val baseTime = LocalTime.of(startLocalTime.hour + 1, startLocalTime.minute)
+        if (endLocalTime.isBefore(baseTime)) {
             Toast.makeText(activity, "최소 설정가능한 시간은 1시간입니다.", Toast.LENGTH_SHORT).show()
             return
         }
 
-        if (startDate.timeInMillis > endDate.timeInMillis) {
+
+        if (startLocalDate.isAfter(endLocalDate)) {
             Toast.makeText(activity, "시작날짜가 종료날짜를 초과할 수 없습니다.", Toast.LENGTH_SHORT).show()
             return
         }
 
-        val checkedDayList = dateList.filter { it.ischecked }.map(DateModel::id)
+        val checkedDayList = dayList.filter { it.ischecked }.map(DateModel::id)
 
         if (isSelsectedSpecificDay.value == true && checkedDayList.isNullOrEmpty()) {
             Toast.makeText(activity, "하나 이상의 요일을 지정해주세요.", Toast.LENGTH_SHORT).show()
@@ -217,45 +288,82 @@ class ReplySettingViewModel(
         realm.executeTransaction {
             val newReplySetting = realm.createObject(ReplySetting::class.java)
             newReplySetting.name = name.value.toString()
-            newReplySetting.replyTarget = replyTarget
+            newReplySetting.replyTarget = replyTarget.value!!.toInt()
             newReplySetting.phoneNumber = phoneNumber.value.toString()
-            newReplySetting.message = message.value.toString()
-            newReplySetting.startDate = startDate.timeInMillis
-            newReplySetting.endDate = endDate.timeInMillis
-            newReplySetting.startHour = startHour
-            newReplySetting.startMinute = startMinute
-            newReplySetting.endHour = endHour
-            newReplySetting.endMinute = endMinute
-            newReplySetting.repeatType =
-                repeatTypeList.filter { it.ischecked }.map(RepeatType::id)[0]
+            newReplySetting.message =
+                if (message.value.isNullOrEmpty()) "지금은 전화를 받을 수 없습니다. 나중에 연락드리겠습니다." else message.value.toString()
+            newReplySetting.startYear = startLocalDate.year
+            newReplySetting.startMonth = startLocalDate.monthValue
+            newReplySetting.startDay = startLocalDate.dayOfMonth
+            newReplySetting.endYear = endLocalDate.year
+            newReplySetting.endMonth = endLocalDate.monthValue
+            newReplySetting.endDay = endLocalDate.dayOfMonth
+            newReplySetting.startHour = startLocalTime.hour
+            newReplySetting.startMinute = startLocalTime.minute
+            newReplySetting.endHour = endLocalTime.hour
+            newReplySetting.endMinute = endLocalTime.minute
+            newReplySetting.repeatType = repeatTypeList.filter { it.ischecked }.map(RepeatType::id)[0]
             newReplySetting.dayList.addAll(checkedDayList)
         }
         realm.close()
 
         Toast.makeText(activity, "저장되었습니다.", Toast.LENGTH_SHORT).show()
+        this.init()
+
+        viewModelScope.launch {
+            _navigateToReplySettingList.value = true
+        }
+    }
+
+    private fun init() {
+        name.value = ""
+        phoneNumber.value = ""
+        message.value = ""
+        replyTarget.value = 0
+
+        isSelectedPhoneNumber.value = false
+        isSelsectedSpecificDay.value = false
+        isOverWeek.value = false
+
+        startLocalDate = LocalDate.now()
+        startDateString.value = ViewConverter.dateToString(startLocalDate)
+
+        endLocalDate = LocalDate.now()
+        endDateString.value = ViewConverter.dateToString(endLocalDate)
+
+        startLocalTime = LocalTime.now()
+        endLocalTime = startLocalTime.plusHours(1)
+
+        startTimeString.value =
+            String.format(
+                "%s : %d",
+                ViewConverter.getAMPM(startLocalTime.hour),
+                startLocalTime.minute
+            )
+
+        endTimeString.value =
+            String.format(
+                "%s : %d",
+                ViewConverter.getAMPM(endLocalTime.hour),
+                endLocalTime.minute
+            )
+
+        this.dayList = initSettingDayList(null)
+        this.repeatTypeList = initRepeatList(null)
     }
 
     private fun onDateSet(p0: Int, p1: Int, p2: Int, p3: Int) {
-        Logger.d("onDateSet %d %d", p1, p2, p3)
-        val calendar = Calendar.getInstance()
-            .apply {
-                set(Calendar.YEAR, p1)
-                set(Calendar.MONTH, p2)
-                set(Calendar.DAY_OF_MONTH, p3)
-            }
-
+        Logger.d("onDateSet %d %d %d", p1, p2, p3)
         if (p0 == 1) {
-            startDateString.value = ViewConverter.dateToString(calendar.time)
-            startDate = calendar.time
+            startLocalDate = LocalDate.of(p1, p2 + 1, p3)
+            startDateString.value = ViewConverter.dateToString(startLocalDate)
         } else {
-            endDateString.value = ViewConverter.dateToString(calendar.time)
-            endDate = calendar.time
+            endLocalDate = LocalDate.of(p1, p2 + 1, p3)
+            endDateString.value = ViewConverter.dateToString(endLocalDate)
         }
 
-        val timeForweek =
-            (6 * 24 * 60 * 60 * 1000).toLong() /// here 24*60*60*1000 =24 hours i.e 1 day
-
-        isOverWeek.value = endDate.time - startDate.time > timeForweek      // 일주일 이상일 경우 반복 설정 가능
+        val baseLocalDate = startLocalDate.plusDays(6)
+        isOverWeek.value = endLocalDate.isAfter(baseLocalDate)      // 일주일 이상일 경우 반복 설정 가능
     }
 
     private fun onTimeSet(p0: Int, p1: Int, p2: Int) {
@@ -263,13 +371,11 @@ class ReplySettingViewModel(
         if (p0 == 1) {
             startTimeString.value =
                 String.format("%s : %d", ViewConverter.getAMPM(p1), p2)
-            startHour = p1
-            startMinute = p2
+            startLocalTime = LocalTime.of(p1, p2)
         } else {
             endTimeString.value =
                 String.format("%s : %d", ViewConverter.getAMPM(p1), p2)
-            endHour = p1
-            endMinute = p2
+            endLocalTime = LocalTime.of(p1, p2)
         }
     }
 }

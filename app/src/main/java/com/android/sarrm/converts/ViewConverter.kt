@@ -5,25 +5,22 @@ import androidx.annotation.RequiresApi
 import androidx.databinding.InverseMethod
 import com.orhanobut.logger.Logger
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 object ViewConverter {
-    @InverseMethod("stringToDate")
-    @JvmStatic fun dateToString(value: Date): String {
-        // Converts long to String.
-        val format = SimpleDateFormat("yyyy년 MM월 dd일", Locale.KOREA)
-        return format.format(value)
-    }
-
     @RequiresApi(Build.VERSION_CODES.O)
-    @JvmStatic fun stringToDate(value: String): Date {
-        // Converts String to long.
-        val format = SimpleDateFormat("yyyy년 MM월 dd일", Locale.KOREA)
-        return format.parse(value)
+    @JvmStatic fun dateToString(value: LocalDate): String {
+        // Converts long to String.
+//        val format = SimpleDateFormat("yyyy년\nMM월 dd일", Locale.KOREA)
+//        return format.format(value)
+        return value.format(DateTimeFormatter.ofPattern("yyyy년\nMM월 dd일"));
     }
 
     @JvmStatic fun getAMPM(value: Int): String {
-        Logger.d("getAMPM %d", value)
+//        Logger.d("getAMPM %d", value)
         return if (value < 12) {
             String.format("오전 %d", value);
         } else {

@@ -6,6 +6,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="titleMenuName"
             type="String" />
@@ -51,14 +53,13 @@
             android:layout_height="@dimen/top_logo_desc_height"
             android:src="@drawable/description_sarrm"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textLogo"
-            />
+            app:layout_constraintTop_toBottomOf="@id/textLogo" />
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fillViewport="true"
             android:layout_marginTop="@dimen/main_margin_top"
+            android:fillViewport="true"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textDescription">
 
@@ -109,17 +110,33 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_gravity="right">
+                    android:layout_gravity="right"
+                    android:orientation="horizontal">
                     <!-- 저장 버튼 -->
-                    <Button
+                    <com.google.android.material.button.MaterialButton
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom"
-                        android:background="@drawable/selector_save_button"
+                        android:layout_marginRight="@dimen/common_margin"
+                        android:onClick="@{() -> replySettingViewModel.deleteReplySetting()}"
+                        android:paddingHorizontal="@dimen/save_button_padding"
+                        android:paddingVertical="@dimen/common_margin"
+                        android:text="@string/button_text_delete"
+                        android:textSize="@dimen/save_button_text_size"
+                        app:strokeColor="@color/colorPrimary"
+                        android:visibility="@{replySettingViewModel.isExistReplySetting ? View.VISIBLE : View.GONE}" />
+
+                    <com.google.android.material.button.MaterialButton
+                        style="@style/Widget.MaterialComponents.Button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
                         android:onClick="@{() -> replySettingViewModel.saveReplySetting()}"
                         android:paddingHorizontal="@dimen/save_button_padding"
+                        android:paddingVertical="@dimen/common_margin"
                         android:text="@string/button_text_save"
-                        android:textColor="@color/white" />
+                        android:textSize="@dimen/save_button_text_size" />
                 </LinearLayout>
             </LinearLayout>
 

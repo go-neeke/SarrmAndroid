@@ -22,6 +22,7 @@
 
     <dimen name="header_margin">16dp</dimen>
     <dimen name="common_margin">10dp</dimen>
+    <dimen name="button_padding">15dp</dimen>
 
     <dimen name="main_logo_height">100dp</dimen>
     <dimen name="top_logo_width">90dp</dimen>
@@ -35,6 +36,7 @@
 
     <!-- 폰트 사이즈 -->
     <dimen name="common_text_size">16sp</dimen>
-    <dimen name="time_text">36sp</dimen>
+    <dimen name="save_button_text_size">18sp</dimen>
+    <dimen name="time_text_size">20sp</dimen>
 
 </resources>

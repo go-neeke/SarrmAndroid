@@ -14,6 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
+        android:layout_weight="1"
         android:orientation="horizontal">
 
         <!-- Start Date -->
@@ -23,9 +24,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="@{() -> replySettingViewModel.openTimePicker(1)}"
-            android:paddingVertical="@dimen/common_margin"
+            android:textSize="@dimen/time_text_size"
+            android:paddingVertical="@dimen/button_padding"
             android:text="@={replySettingViewModel.startTimeString}"
-            app:shapeAppearanceOverlay="@style/CustomShapeAppearanceOverlay.StartButton" />
+            android:textStyle="bold"/>
 
         <!-- End Date -->
         <com.google.android.material.button.MaterialButton
@@ -33,10 +35,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textStyle="bold"
             android:onClick="@{() -> replySettingViewModel.openTimePicker(2)}"
-            android:paddingVertical="@dimen/common_margin"
-            android:text="@={replySettingViewModel.endTimeString}"
-            app:shapeAppearanceOverlay="@style/CustomShapeAppearanceOverlay.EndButton" />
+            android:textSize="@dimen/time_text_size"
+            android:paddingVertical="@dimen/button_padding"
+            android:text="@={replySettingViewModel.endTimeString}" />
     </LinearLayout>
 
 </layout>

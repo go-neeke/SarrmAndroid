@@ -3,13 +3,37 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/replySettingFragment">
+    app:startDestination="@id/replySettingListFragment">
+
+    <fragment
+        android:id="@+id/replySettingListFragment"
+        android:name="com.android.sarrm.view.fragments.ReplySettingListFragment"
+        android:label="Reply Setting List"
+        tools:layout="@layout/fragment_reply_setting_list">
+        <action
+            android:id="@+id/action_replySettingListFragment_to_replySettingFragment"
+            app:destination="@id/replySettingFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
 
     <fragment
         android:id="@+id/replySettingFragment"
         android:name="com.android.sarrm.view.fragments.ReplySettingFragment"
         android:label="ReplySetting"
         tools:layout="@layout/fragment_reply_setting">
+        <action
+            android:id="@+id/action_replySettingDetailFragment_to_replySettingListFragment"
+            app:destination="@id/replySettingListFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_right"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_left" />
+        <argument
+            android:name="replySettingId"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
-    
 </navigation>

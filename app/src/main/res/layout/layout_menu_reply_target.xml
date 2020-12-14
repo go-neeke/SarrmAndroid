@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <import type="android.view.View"/>
+
+        <import type="android.view.View" />
 
         <variable
             name="titleName"
@@ -49,27 +50,33 @@
             android:orientation="vertical">
 
             <!-- 응답 대상 선택 -->
-            <Spinner
-                android:id="@+id/spinnerReplyTarget"
-                style="@style/Widget.AppCompat.Spinner.DropDown"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/round_outline"
-                android:entries="@array/reply_target_array"
-                android:paddingVertical="@dimen/common_margin"
-                android:textAppearance="@android:style/TextAppearance.Material.Widget.EditText"
-                tools:setOnItemSelectedListener="@{replySettingViewModel.onSelectedReplyTargetListener}" />
+                android:background="@drawable/round_outline">
+
+                <Spinner
+                    android:id="@+id/spinnerReplyTarget"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:entries="@array/reply_target_array"
+                    android:paddingVertical="@dimen/common_margin"
+                    android:spinnerMode="dropdown"
+                    android:textAppearance="@android:style/TextAppearance.Material.Widget.EditText"
+                    tools:setOnItemSelectedListener="@{replySettingViewModel.onSelectedReplyTargetListener}"
+                    android:selectedItemPosition="@={replySettingViewModel.replyTarget}"/>
+            </RelativeLayout>
 
             <!-- 응답대상을 번호지정으로 선택했을 때만 폰번호 입력란이 보임 -->
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/common_margin"
                 android:background="@drawable/round_outline"
                 android:cursorVisible="true"
                 android:hint="@string/hint_menu_phoneNumber"
                 android:padding="@dimen/common_margin"
                 android:singleLine="true"
-                android:layout_marginTop="@dimen/common_margin"
                 android:text="@={replySettingViewModel.phoneNumber}"
                 android:textAppearance="@android:style/TextAppearance.Material.Widget.EditText"
                 android:textSize="@dimen/common_text_size"

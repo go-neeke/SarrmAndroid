@@ -164,7 +164,7 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
         Logger.d("onDestroy")
         try {
-            stopService(mIntent)
+//            stopService()
         } catch (e: UninitializedPropertyAccessException) {
             e.printStackTrace()
         }

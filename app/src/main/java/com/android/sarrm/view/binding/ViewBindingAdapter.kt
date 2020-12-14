@@ -30,6 +30,7 @@ class ViewBindingAdapter {
                 val chip = inflater.inflate(R.layout.layout_chip, group, false) as Chip
                 chip.id = index
                 chip.text = item.date
+                chip.isChecked = item.ischecked
                 chip.setOnCheckedChangeListener { view, isChecked ->
                     item.ischecked = isChecked
                 }
@@ -54,14 +55,11 @@ class ViewBindingAdapter {
                     RadioGroup.LayoutParams.WRAP_CONTENT
                 );
 
-                item.ischecked = index == 0
-
                 params.weight = 1.0f
-
                 radio.layoutParams = params
                 radio.id = index
                 radio.text = item.type
-                radio.isChecked = index == 0
+                radio.isChecked = item.ischecked
                 radio.setOnCheckedChangeListener(onSelectedSpecificDayListener)
 
                 group.addView(radio)
