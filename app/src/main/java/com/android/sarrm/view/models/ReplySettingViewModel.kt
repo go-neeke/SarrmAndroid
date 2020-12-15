@@ -63,16 +63,14 @@ class ReplySettingViewModel(
     var endLocalTime = startLocalTime.plusHours(1)
 
     val startTimeString = MutableLiveData<String>().default(
-        String.format(
-            "%s : %d",
-            ViewConverter.getAMPM(startLocalTime.hour),
+        ViewConverter.getTime(
+            startLocalTime.hour,
             startLocalTime.minute
         )
     )
     val endTimeString = MutableLiveData<String>().default(
-        String.format(
-            "%s : %d",
-            ViewConverter.getAMPM(endLocalTime.hour),
+        ViewConverter.getTime(
+            endLocalTime.hour,
             endLocalTime.minute
         )
     )
@@ -131,17 +129,10 @@ class ReplySettingViewModel(
             replySettingData?.startHour!!,
             replySettingData?.startMinute!!
         )
-        this.startTimeString.value = String.format(
-            "%s : %d",
-            ViewConverter.getAMPM(startLocalTime.hour),
-            startLocalTime.minute
-        )
+        this.startTimeString.value =
+            ViewConverter.getTime(startLocalTime.hour, startLocalTime.minute)
         this.endLocalTime = LocalTime.of(replySettingData?.endHour!!, replySettingData?.endMinute!!)
-        this.endTimeString.value = String.format(
-            "%s : %d",
-            ViewConverter.getAMPM(endLocalTime.hour),
-            endLocalTime.minute
-        )
+        this.endTimeString.value = ViewConverter.getTime(endLocalTime.hour, endLocalTime.minute)
 
         this.replyTarget.value = replySettingData.replyTarget
 
@@ -161,7 +152,7 @@ class ReplySettingViewModel(
         val list: MutableList<DateModel> = ArrayList()
 
         for ((index, item) in dateList.withIndex()) {
-            list.add(DateModel(index, item, selectedDayList?.any{it == index} ?: false))
+            list.add(DateModel(index, item, selectedDayList?.any { it == index } ?: false))
         }
 
         return list
@@ -172,7 +163,13 @@ class ReplySettingViewModel(
         val list: MutableList<RepeatType> = ArrayList()
 
         for ((index, item) in typeList.withIndex()) {
-            list.add(RepeatType(index, item, if (selectedRepeatType != null) index == selectedRepeatType else index == 0))
+            list.add(
+                RepeatType(
+                    index,
+                    item,
+                    if (selectedRepeatType != null) index == selectedRepeatType else index == 0
+                )
+            )
         }
 
         return list
@@ -284,9 +281,8 @@ class ReplySettingViewModel(
             return
         }
 
-        val realm: Realm = Realm.getDefaultInstance()
         realm.executeTransaction {
-            val newReplySetting = realm.createObject(ReplySetting::class.java)
+            val newReplySetting = if (replySettingId != null) realmDao.findReplySettingById(replySettingId!!) as ReplySetting else realm.createObject(ReplySetting::class.java)
             newReplySetting.name = name.value.toString()
             newReplySetting.replyTarget = replyTarget.value!!.toInt()
             newReplySetting.phoneNumber = phoneNumber.value.toString()
@@ -302,10 +298,10 @@ class ReplySettingViewModel(
             newReplySetting.startMinute = startLocalTime.minute
             newReplySetting.endHour = endLocalTime.hour
             newReplySetting.endMinute = endLocalTime.minute
-            newReplySetting.repeatType = repeatTypeList.filter { it.ischecked }.map(RepeatType::id)[0]
+            newReplySetting.repeatType =
+                repeatTypeList.filter { it.ischecked }.map(RepeatType::id)[0]
             newReplySetting.dayList.addAll(checkedDayList)
         }
-        realm.close()
 
         Toast.makeText(activity, "저장되었습니다.", Toast.LENGTH_SHORT).show()
         this.init()
@@ -334,19 +330,8 @@ class ReplySettingViewModel(
         startLocalTime = LocalTime.now()
         endLocalTime = startLocalTime.plusHours(1)
 
-        startTimeString.value =
-            String.format(
-                "%s : %d",
-                ViewConverter.getAMPM(startLocalTime.hour),
-                startLocalTime.minute
-            )
-
-        endTimeString.value =
-            String.format(
-                "%s : %d",
-                ViewConverter.getAMPM(endLocalTime.hour),
-                endLocalTime.minute
-            )
+        startTimeString.value = ViewConverter.getTime(startLocalTime.hour, startLocalTime.minute)
+        endTimeString.value = ViewConverter.getTime(endLocalTime.hour, endLocalTime.minute)
 
         this.dayList = initSettingDayList(null)
         this.repeatTypeList = initRepeatList(null)
@@ -369,13 +354,13 @@ class ReplySettingViewModel(
     private fun onTimeSet(p0: Int, p1: Int, p2: Int) {
         Logger.d("onTimeSet %d %d", p1, p2)
         if (p0 == 1) {
-            startTimeString.value =
-                String.format("%s : %d", ViewConverter.getAMPM(p1), p2)
             startLocalTime = LocalTime.of(p1, p2)
+            startTimeString.value =
+                ViewConverter.getTime(startLocalTime.hour, startLocalTime.minute)
         } else {
-            endTimeString.value =
-                String.format("%s : %d", ViewConverter.getAMPM(p1), p2)
             endLocalTime = LocalTime.of(p1, p2)
+            endTimeString.value =
+                ViewConverter.getTime(endLocalTime.hour, endLocalTime.minute)
         }
     }
 }

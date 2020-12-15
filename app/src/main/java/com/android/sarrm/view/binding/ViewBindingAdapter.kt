@@ -1,21 +1,22 @@
 package com.android.sarrm.view.binding
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.CompoundButton
-import android.widget.LinearLayout
-import androidx.appcompat.widget.AppCompatRadioButton
 import android.widget.RadioGroup
-import androidx.core.view.marginRight
+import androidx.appcompat.widget.AppCompatRadioButton
 import androidx.databinding.*
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.MutableLiveData
 import com.android.sarrm.R
 import com.android.sarrm.data.models.DateModel
 import com.android.sarrm.data.models.RepeatType
+import com.android.sarrm.data.models.ReplySetting
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.orhanobut.logger.Logger
+
 
 class ViewBindingAdapter {
     companion object {
@@ -66,4 +67,5 @@ class ViewBindingAdapter {
             }
         }
     }
+
 }

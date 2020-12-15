@@ -34,4 +34,10 @@
         <item name="colorPrimary">#ffffff</item>
         <item name="android:timePickerMode">spinner</item>
     </style>
+
+    <style name="ItemHeaderStyle"  parent="@style/TextAppearance.MaterialComponents.Headline5">
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
 </resources>
