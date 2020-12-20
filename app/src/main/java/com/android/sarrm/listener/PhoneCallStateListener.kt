@@ -101,27 +101,28 @@ class PhoneCallStateListener(private val context: Context) : PhoneStateListener(
 
         if (replyTarget == 0) {
             Logger.d("무조건 end call -> receive sms")
-            endCall(incomingNumber)
+            endCall(replySetting, incomingNumber)
         } else if (replyTarget == 1) {
             if (CheckNumberContacts.isFromContacts(context, incomingNumber)) {
                 Logger.d("연락처 검색완료 -> receive sms")
-                endCall(incomingNumber)
+                endCall(replySetting, incomingNumber)
             } else {
                 Logger.d("연락처 없음")
             }
         } else {
             if (phoneNumber === incomingNumber) {
-                endCall(incomingNumber)
+                endCall(replySetting, incomingNumber)
                 Logger.d("전화온 번호와 db에 저장된 번호가 동일하면 -> receive sms, 아니면 return")
             }
         }
     }
 
     @SuppressLint("MissingPermission")
-    private fun endCall(number: String?) {
+    private fun endCall(replySetting: ReplySetting, number: String?) {
         Logger.d("PhoneCallStateListener endCall")
         if (Build.VERSION.SDK_INT >= 28) {
-            val telecomManager = context?.getSystemService(Context.TELECOM_SERVICE) as TelecomManager
+            val telecomManager =
+                context?.getSystemService(Context.TELECOM_SERVICE) as TelecomManager
             telecomManager.endCall()
         } else {
             val tm = context?.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager

@@ -23,7 +23,7 @@
         android:id="@+id/replySettingFragment"
         android:name="com.android.sarrm.view.fragments.ReplySettingFragment"
         android:label="ReplySetting"
-        tools:layout="@layout/fragment_reply_setting">
+        tools:layout="@layout/activity_reply_setting">
         <action
             android:id="@+id/action_replySettingDetailFragment_to_replySettingListFragment"
             app:destination="@id/replySettingListFragment"

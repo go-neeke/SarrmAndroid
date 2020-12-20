@@ -27,6 +27,8 @@ open class ReplySetting : RealmObject() {
     var repeatType: Int = 0
     var dayList: RealmList<Int> = RealmList<Int>()
     var message: String = ""
+    var resultResult: RealmList<String> = RealmList<String>()
+    var isOn : Boolean = true
 
     @PrimaryKey
     var id: String = UUID.randomUUID().toString()

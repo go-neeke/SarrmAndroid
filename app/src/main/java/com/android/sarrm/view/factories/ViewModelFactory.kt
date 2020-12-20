@@ -8,6 +8,7 @@ import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.savedstate.SavedStateRegistryOwner
+import com.android.sarrm.view.models.ReplyResultViewModel
 import com.android.sarrm.view.models.ReplySettingListViewModel
 import com.android.sarrm.view.models.ReplySettingViewModel
 
@@ -27,6 +28,9 @@ class ViewModelFactory(
                 ReplySettingViewModel(activity)
             isAssignableFrom(ReplySettingListViewModel::class.java) ->
                 ReplySettingListViewModel(activity)
+            isAssignableFrom(ReplyResultViewModel::class.java) ->
+                ReplyResultViewModel(activity)
+
             else ->
                 throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
         }

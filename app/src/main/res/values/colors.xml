@@ -9,4 +9,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="ic_launcher_background">#B2255A</color>
     <color name="outline_color">#e2e2e2</color>
+    <color name="colorBackground">#fff</color>
+    <color name="colorArrow">#000</color>
+    <color name="colorDescriptionBackground">#aaa</color>
 </resources>

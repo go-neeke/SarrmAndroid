@@ -3,11 +3,11 @@ package com.android.sarrm.data.models
 import androidx.lifecycle.LiveData
 import io.realm.RealmChangeListener
 import io.realm.RealmModel
-import io.realm.RealmResults
+import io.realm.RealmList
 
-class RealmLiveData<T : RealmModel>(private val results: RealmResults<T>) :
-    LiveData<RealmResults<T>>() {
-    private val listener: RealmChangeListener<RealmResults<T>> =
+class RealmListLiveData<T : String>(private val results: RealmList<T>) :
+    LiveData<RealmList<T>>() {
+    private val listener: RealmChangeListener<RealmList<T>> =
         RealmChangeListener { results -> value = results }
 
     override fun onActive() {

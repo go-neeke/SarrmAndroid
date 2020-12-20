@@ -8,6 +8,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.graphics.Color
+import android.graphics.drawable.AnimatedVectorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -28,14 +30,42 @@ import kotlinx.android.synthetic.main.layout_menu_reply_target.*
 import java.text.SimpleDateFormat
 import java.util.*
 import android.provider.ContactsContract
+import android.util.TypedValue
+import androidx.activity.viewModels
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.android.sarrm.data.models.ReplySettingClicked
 import com.android.sarrm.receiver.PhoneCallReceiver
 import com.android.sarrm.utils.CheckNumberContacts
+import com.android.sarrm.view.adapters.ReplySettingListAdapter
+import com.android.sarrm.view.factories.ViewModelFactory
+import com.android.sarrm.view.fragments.ReplyResultFragment
+import com.android.sarrm.view.fragments.ReplySettingListFragmentDirections
+import com.android.sarrm.view.models.ReplySettingListViewModel
+import com.jakewharton.rxrelay2.PublishRelay
+import me.saket.inboxrecyclerview.animation.ItemExpandAnimator
+import me.saket.inboxrecyclerview.dimming.DimPainter
+import me.saket.inboxrecyclerview.page.SimplePageStateChangeCallbacks
 
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var mIntent: Intent
     private lateinit var binding: ActivityMainBinding
+
+    private lateinit var replySettingId: String
+
+    private val onDestroy = PublishRelay.create<Any>()
+    private val adapter = ReplySettingListAdapter()
+
+    private val replySettingListViewModel by viewModels<ReplySettingListViewModel> {
+        ViewModelFactory(
+            this,
+            this
+        )
+    }
 
     val PERMISSION_REQ_CODE = 1234
     val PERMISSIONS_PHONE_BEFORE_P = arrayOf(
@@ -64,6 +94,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        binding.lifecycleOwner = this
+
+        setupThreadList()
+        setupThreadPage()
+        setupFab()
 
         // 퍼미션 체크
         checkPermissions()
@@ -147,10 +182,12 @@ class MainActivity : AppCompatActivity() {
 
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
                         if (!Settings.canDrawOverlays(this)) {
-                            Logger.d("Settings.canDrawOverlays(this) %s",Settings.canDrawOverlays(this))
+                            Logger.d(
+                                "Settings.canDrawOverlays(this) %s",
+                                Settings.canDrawOverlays(this)
+                            )
                             checkDrawOverlayPermission()
-                        }
-                        else startPhoneCallService()
+                        } else startPhoneCallService()
 
                 } else {
 //                    Toast.makeText(this, getString(R.string.permission_not_granted), Toast.LENGTH_SHORT).show();
@@ -161,6 +198,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        onDestroy.accept(Any())
         super.onDestroy()
         Logger.d("onDestroy")
         try {
@@ -169,6 +207,98 @@ class MainActivity : AppCompatActivity() {
             e.printStackTrace()
         }
     }
+
+    override fun onBackPressed() {
+        if (binding.inboxEmailThreadPage.isExpandedOrExpanding) {
+            binding.inboxRecyclerview.collapse()
+        } else {
+            super.onBackPressed()
+        }
+    }
+
+    @SuppressLint("CheckResult")
+    private fun setupThreadList() {
+        binding.inboxRecyclerview.layoutManager = LinearLayoutManager(this)
+        binding.inboxRecyclerview.expandablePage = binding.inboxEmailThreadPage
+        binding.inboxRecyclerview.dimPainter = DimPainter.listAndPage(
+            listColor = Color.WHITE,
+            listAlpha = 0.75F,
+            pageColor = Color.WHITE,
+            pageAlpha = 0.65f
+        )
+        binding.inboxRecyclerview.itemExpandAnimator = ItemExpandAnimator.split()
+        binding.inboxEmailThreadPage.pullToCollapseThresholdDistance = dp(90)
+
+        replySettingListViewModel.allReplySettingList.observeForever {
+            it?.let {
+                adapter.submitList(it)
+                binding.emptyView.visibility = (if (adapter.itemCount == 0) View.VISIBLE else View.GONE)
+            }
+        }
+
+        adapter.replySettingListViewModel = replySettingListViewModel
+        binding.inboxRecyclerview.adapter = adapter
+
+        adapter.itemClicks
+            .takeUntil(onDestroy)
+            .subscribe {
+                binding.inboxRecyclerview.expandItem(it.itemId)
+            }
+    }
+
+    @SuppressLint("CheckResult")
+    private fun setupThreadPage() {
+        var replyResultFragment =
+            supportFragmentManager.findFragmentById(binding.inboxEmailThreadPage.id) as ReplyResultFragment?
+        if (replyResultFragment == null) {
+            replyResultFragment = ReplyResultFragment()
+        }
+
+        supportFragmentManager
+            .beginTransaction()
+            .replace(binding.inboxEmailThreadPage.id, replyResultFragment)
+            .commitNowAllowingStateLoss()
+
+        adapter.itemClicks
+            .map { it.replySettingItem.id }
+            .takeUntil(onDestroy)
+            .subscribe {
+                replySettingId = it
+                replyResultFragment.populate(it)
+            }
+    }
+
+    private fun setupFab() {
+        binding.inboxFab.setImageDrawable(resources.getDrawable(R.drawable.ic_add_24))
+
+        binding.inboxFab.setOnClickListener {
+            val intent = Intent(this, ReplySettingActivity::class.java)
+
+            if (binding.inboxEmailThreadPage.isExpandedOrExpanding) {
+                intent.putExtra("replySettingId", replySettingId)
+                startActivity(intent)
+            } else {
+                startActivity(intent)
+            }
+        }
+
+
+        binding.inboxEmailThreadPage.addStateChangeCallbacks(object :
+            SimplePageStateChangeCallbacks() {
+            override fun onPageAboutToExpand(expandAnimDuration: Long) {
+                binding.inboxFab.setImageDrawable(resources.getDrawable(R.drawable.ic_edit_24))
+            }
+
+            override fun onPageAboutToCollapse(collapseAnimDuration: Long) {
+                binding.inboxFab.setImageDrawable(resources.getDrawable(R.drawable.ic_add_24))
+            }
+        })
+    }
+}
+
+private fun Context.dp(value: Int): Int {
+    val metrics = resources.displayMetrics
+    return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, value.toFloat(), metrics).toInt()
 }
 
 fun Context.isServiceRunning(serviceClass: Class<*>): Boolean {

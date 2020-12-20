@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".view.fragments.ReplyResultFragment">
+
+    <data>
+
+        <variable
+            name="replyResultViewModel"
+            type="com.android.sarrm.view.models.ReplyResultViewModel" />
+
+    </data>
+
+    <ScrollView
+        android:id="@+id/emailthread_scrollable_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="4dp"
+            android:background="#FDFDFD"
+            android:paddingBottom="@dimen/common_margin">
+
+            <ImageButton
+                android:id="@+id/emailthread_collapse"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_margin="16dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="8dp"
+                android:src="@drawable/ic_down_24"
+                android:tint="#516771"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view_beer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/emailthread_collapse"
+                android:clipToPadding="false"
+                android:nestedScrollingEnabled="true"
+                android:paddingStart="@dimen/common_margin"
+                android:paddingTop="@dimen/common_margin"
+                android:paddingEnd="@dimen/common_margin"
+                android:paddingBottom="?attr/actionBarSize"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                tools:listitem="@layout/list_item" />
+
+            <TextView
+                android:id="@+id/empty_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="데이터가 없습니다."
+                android:visibility="gone" />
+        </RelativeLayout>
+    </ScrollView>
+</layout>

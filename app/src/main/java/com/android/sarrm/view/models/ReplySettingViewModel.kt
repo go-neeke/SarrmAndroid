@@ -18,6 +18,7 @@ import com.android.sarrm.data.models.RepeatType
 import com.android.sarrm.data.models.ReplySetting
 import com.orhanobut.logger.Logger
 import io.realm.Realm
+import io.realm.RealmList
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
@@ -282,7 +283,7 @@ class ReplySettingViewModel(
         }
 
         realm.executeTransaction {
-            val newReplySetting = if (replySettingId != null) realmDao.findReplySettingById(replySettingId!!) as ReplySetting else realm.createObject(ReplySetting::class.java)
+            val newReplySetting = realm.createObject(ReplySetting::class.java)
             newReplySetting.name = name.value.toString()
             newReplySetting.replyTarget = replyTarget.value!!.toInt()
             newReplySetting.phoneNumber = phoneNumber.value.toString()
@@ -301,6 +302,8 @@ class ReplySettingViewModel(
             newReplySetting.repeatType =
                 repeatTypeList.filter { it.ischecked }.map(RepeatType::id)[0]
             newReplySetting.dayList.addAll(checkedDayList)
+            newReplySetting.resultResult = RealmList<String>()
+            newReplySetting.isOn = true
         }
 
         Toast.makeText(activity, "저장되었습니다.", Toast.LENGTH_SHORT).show()

@@ -19,4 +19,10 @@
         <attr name="mnpFontname" format="string" />
     </declare-styleable>
 
+    <declare-styleable name="ListItem">
+        <attr name="personName" format="reference"/>
+        <attr name="personTitle" format="reference"/>
+        <attr name="personDescription" format="reference"/>
+    </declare-styleable>
+
 </resources>

@@ -10,6 +10,10 @@ realm {
     kotlinExtensionsEnabled = true
 }
 
+repositories {
+    maven { url "https://jitpack.io" }
+}
+
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
@@ -50,6 +54,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    androidExtensions {
+        experimental = true
+    }
 }
 
 dependencies {
@@ -62,6 +70,8 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'com.jakewharton.timber:timber:4.7.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'com.jakewharton.rxrelay2:rxrelay:2.0.0'
+
 
     // RecyclerView
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
@@ -100,7 +110,7 @@ dependencies {
     //Logger
     implementation 'com.orhanobut:logger:2.2.0'
 
-    implementation 'com.google.android:flexbox:2.0.1'
+    implementation 'me.saket:inboxrecyclerview:2.3.0'
 
     // Testing
     testImplementation 'junit:junit:4.13.1'
