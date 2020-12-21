@@ -36,8 +36,8 @@ class ReplySettingActivity : AppCompatActivity() {
         binding.replySettingViewModel = replySettingViewModel
         binding.lifecycleOwner = this
 
-        var replySettingId: String? = intent.getStringExtra("replySettingId")
-        if (!replySettingId.isNullOrEmpty()) replySettingViewModel.start(replySettingId)
+        var replySettingId: Long? = intent.getLongExtra("replySettingId", 0)
+        if (replySettingId?.toInt() != 0) replySettingViewModel.start(replySettingId)
         Logger.d("replySettingId %s",replySettingId)
 
     }

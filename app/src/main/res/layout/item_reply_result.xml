@@ -4,28 +4,53 @@
     <data>
 
         <variable
-            name="phoneNumber"
-            type="String" />
+            name="replyResult"
+            type="com.android.sarrm.data.models.ReplyResult" />
 
     </data>
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="3dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="3dp">
+        android:layout_margin="@dimen/common_margin">
 
-        <TextView
-            android:id="@+id/item_text"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:textColor="#448aff"
-            android:textSize="18sp"
-            android:text="@{phoneNumber}"/>
+            android:orientation="vertical"
+            android:padding="@dimen/common_margin">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="2dp"
+                    android:src="@drawable/ic_baseline_message_24" />
+
+                <TextView
+                    android:id="@+id/item_phone_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@{replyResult.phoneNumber}"
+                    android:layout_marginHorizontal="4dp"
+                    android:textAppearance="@android:style/TextAppearance.Material.Subhead"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/item_send_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical|right"
+                android:text="@{replyResult.sendDate.toLocaleString()}"
+                android:textAppearance="@android:style/TextAppearance.Material.Caption" />
+
+        </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>
 </layout>

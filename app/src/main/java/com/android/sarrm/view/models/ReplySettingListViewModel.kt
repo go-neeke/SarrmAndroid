@@ -30,24 +30,13 @@ class ReplySettingListViewModel(
             realm.copyFromRealm(realmResult)
         }
 
-    private val _navigateToReplySettingDetail = MutableLiveData<String>()
-    val navigateToReplySettingDetail: LiveData<String>
-        get() = _navigateToReplySettingDetail
-
-    fun onReplySettingClicked(id: String) {
-        _navigateToReplySettingDetail.value = id
-    }
-
-    fun onNewReplySettingNavigated() {
-        _navigateToReplySettingDetail.value = null
-    }
 
     override fun onCleared() {
         realm.close()
         super.onCleared()
     }
 
-    fun settingToggle(id: String, isOn: Boolean) {
+    fun settingToggle(id: Long, isOn: Boolean) {
         realmDao.settingToggle(id, isOn)
     }
 }

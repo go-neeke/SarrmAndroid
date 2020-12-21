@@ -15,6 +15,7 @@ import com.android.sarrm.converts.ViewConverter
 import com.android.sarrm.data.db.ReplySettingRealmDao
 import com.android.sarrm.data.models.DateModel
 import com.android.sarrm.data.models.RepeatType
+import com.android.sarrm.data.models.ReplyResult
 import com.android.sarrm.data.models.ReplySetting
 import com.orhanobut.logger.Logger
 import io.realm.Realm
@@ -23,6 +24,7 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
 import java.util.*
+import kotlin.Exception
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -36,11 +38,7 @@ class ReplySettingViewModel(
 
     val realmDao = ReplySettingRealmDao(realm)
 
-    private var replySettingId: String? = null
-
-    private val _navigateToReplySettingList = MutableLiveData<Boolean>()
-    val navigateToReplySettingList: LiveData<Boolean>
-        get() = _navigateToReplySettingList
+    private var replySettingId: Long? = null
 
     val isExistReplySetting = MutableLiveData<Boolean>()   // 특정요일
 
@@ -52,13 +50,6 @@ class ReplySettingViewModel(
     val isSelectedPhoneNumber = MutableLiveData<Boolean>()   // 응답 대상 Spinner 선택
     val isSelsectedSpecificDay = MutableLiveData<Boolean>()   // 특정요일
     val isOverWeek = MutableLiveData<Boolean>()
-
-    var startLocalDate = LocalDate.now()
-    val startDateString =
-        MutableLiveData<String>().default(ViewConverter.dateToString(startLocalDate))
-
-    var endLocalDate = LocalDate.now()
-    val endDateString = MutableLiveData<String>().default(ViewConverter.dateToString(endLocalDate))
 
     var startLocalTime = LocalTime.now()
     var endLocalTime = startLocalTime.plusHours(1)
@@ -76,6 +67,13 @@ class ReplySettingViewModel(
         )
     )
 
+    var startLocalDate = LocalDate.now()
+    val startDateString =
+        MutableLiveData<String>().default(ViewConverter.dateToString(startLocalDate))
+
+    var endLocalDate = if (endLocalTime.hour == 0) LocalDate.now().plusDays(1) else LocalDate.now()
+    val endDateString = MutableLiveData<String>().default(ViewConverter.dateToString(endLocalDate))
+
     var dayList =
         initSettingDayList(null)
     var repeatTypeList = initRepeatList(null)
@@ -90,7 +88,7 @@ class ReplySettingViewModel(
     fun <T : Any?> MutableLiveData<T>.default(initialValue: T) = apply { setValue(initialValue) }
 
 
-    fun start(replySettingId: String?) {
+    fun start(replySettingId: Long?) {
         this.replySettingId = replySettingId;
 
         if (replySettingId == null) {
@@ -103,7 +101,7 @@ class ReplySettingViewModel(
         }
     }
 
-    private fun getReplySettingFromRealm(id: String) {
+    private fun getReplySettingFromRealm(id: Long) {
         val replySettingData = realmDao.findReplySettingById(id)
 
         Logger.d("getReplySettingFromRealm %s", replySettingData.toString())
@@ -241,76 +239,91 @@ class ReplySettingViewModel(
     }
 
     fun deleteReplySetting() {
-        realmDao.deleteReplySettingById(replySettingId!!)
+        try {
+            realmDao.deleteReplySettingById(replySettingId!!)
+        } catch (e: Exception) {
+            Toast.makeText(activity, "에러가 발생했습니다.", Toast.LENGTH_SHORT).show()
+            Logger.e(e.toString())
+        }
+
         viewModelScope.launch {
-            _navigateToReplySettingList.value = true
+            Toast.makeText(activity, "삭제되었습니다.", Toast.LENGTH_SHORT).show()
+            activity.onBackPressed()
         }
     }
 
     fun saveReplySetting() {
-        if (name.value.isNullOrEmpty()) {
-            Toast.makeText(activity, "설정할 이름을 입력해주세요.", Toast.LENGTH_SHORT).show()
-            return
-        }
+        try {
+            if (name.value.isNullOrEmpty()) {
+                Toast.makeText(activity, "설정할 이름을 입력해주세요.", Toast.LENGTH_SHORT).show()
+                return
+            }
 
-        if (replyTarget.value == 2 && phoneNumber.value.isNullOrEmpty()) {
-            Toast.makeText(activity, "특정 번호 지정시 핸드폰 입력은 필수입니다.", Toast.LENGTH_SHORT).show()
-            return
-        }
+            if (replyTarget.value == 2 && phoneNumber.value.isNullOrEmpty()) {
+                Toast.makeText(activity, "특정 번호 지정시 핸드폰 입력은 필수입니다.", Toast.LENGTH_SHORT).show()
+                return
+            }
 
-        if (startLocalTime.isAfter(endLocalTime)) {
-            Toast.makeText(activity, "시작시간이 종료시간을 초과할 수 없습니다.", Toast.LENGTH_SHORT).show()
-            return
-        }
+            if (startLocalTime.isAfter(endLocalTime)) {
+                Toast.makeText(activity, "시작시간이 종료시간을 초과할 수 없습니다.", Toast.LENGTH_SHORT).show()
+                return
+            }
 
-        val baseTime = LocalTime.of(startLocalTime.hour + 1, startLocalTime.minute)
-        if (endLocalTime.isBefore(baseTime)) {
-            Toast.makeText(activity, "최소 설정가능한 시간은 1시간입니다.", Toast.LENGTH_SHORT).show()
-            return
-        }
+            val baseTime = LocalTime.of(startLocalTime.hour + 1, startLocalTime.minute)
+            if (endLocalTime.isBefore(baseTime)) {
+                Toast.makeText(activity, "최소 설정가능한 시간은 1시간입니다.", Toast.LENGTH_SHORT).show()
+                return
+            }
 
 
-        if (startLocalDate.isAfter(endLocalDate)) {
-            Toast.makeText(activity, "시작날짜가 종료날짜를 초과할 수 없습니다.", Toast.LENGTH_SHORT).show()
-            return
-        }
+            if (startLocalDate.isAfter(endLocalDate)) {
+                Toast.makeText(activity, "시작날짜가 종료날짜를 초과할 수 없습니다.", Toast.LENGTH_SHORT).show()
+                return
+            }
 
-        val checkedDayList = dayList.filter { it.ischecked }.map(DateModel::id)
+            val checkedDayList = dayList.filter { it.ischecked }.map(DateModel::id)
 
-        if (isSelsectedSpecificDay.value == true && checkedDayList.isNullOrEmpty()) {
-            Toast.makeText(activity, "하나 이상의 요일을 지정해주세요.", Toast.LENGTH_SHORT).show()
-            return
-        }
+            if (isSelsectedSpecificDay.value == true && checkedDayList.isNullOrEmpty()) {
+                Toast.makeText(activity, "하나 이상의 요일을 지정해주세요.", Toast.LENGTH_SHORT).show()
+                return
+            }
 
-        realm.executeTransaction {
-            val newReplySetting = realm.createObject(ReplySetting::class.java)
-            newReplySetting.name = name.value.toString()
-            newReplySetting.replyTarget = replyTarget.value!!.toInt()
-            newReplySetting.phoneNumber = phoneNumber.value.toString()
-            newReplySetting.message =
-                if (message.value.isNullOrEmpty()) "지금은 전화를 받을 수 없습니다. 나중에 연락드리겠습니다." else message.value.toString()
-            newReplySetting.startYear = startLocalDate.year
-            newReplySetting.startMonth = startLocalDate.monthValue
-            newReplySetting.startDay = startLocalDate.dayOfMonth
-            newReplySetting.endYear = endLocalDate.year
-            newReplySetting.endMonth = endLocalDate.monthValue
-            newReplySetting.endDay = endLocalDate.dayOfMonth
-            newReplySetting.startHour = startLocalTime.hour
-            newReplySetting.startMinute = startLocalTime.minute
-            newReplySetting.endHour = endLocalTime.hour
-            newReplySetting.endMinute = endLocalTime.minute
-            newReplySetting.repeatType =
-                repeatTypeList.filter { it.ischecked }.map(RepeatType::id)[0]
-            newReplySetting.dayList.addAll(checkedDayList)
-            newReplySetting.resultResult = RealmList<String>()
-            newReplySetting.isOn = true
+            Logger.d("replySettingId %d", replySettingId)
+            realm.executeTransaction {
+                val newReplySetting =
+                    if (replySettingId == null || replySettingId?.toInt() == 0) realm.createObject(
+                        ReplySetting::class.java
+                    ) else realmDao.findReplySettingById(replySettingId!!) as ReplySetting
+                newReplySetting.name = name.value.toString()
+                newReplySetting.replyTarget = replyTarget.value!!.toInt()
+                newReplySetting.phoneNumber = phoneNumber.value.toString()
+                newReplySetting.message =
+                    if (message.value.isNullOrEmpty()) "지금은 전화를 받을 수 없습니다. 나중에 연락드리겠습니다." else message.value.toString()
+                newReplySetting.startYear = startLocalDate.year
+                newReplySetting.startMonth = startLocalDate.monthValue
+                newReplySetting.startDay = startLocalDate.dayOfMonth
+                newReplySetting.endYear = endLocalDate.year
+                newReplySetting.endMonth = endLocalDate.monthValue
+                newReplySetting.endDay = endLocalDate.dayOfMonth
+                newReplySetting.startHour = startLocalTime.hour
+                newReplySetting.startMinute = startLocalTime.minute
+                newReplySetting.endHour = endLocalTime.hour
+                newReplySetting.endMinute = endLocalTime.minute
+                newReplySetting.repeatType =
+                    repeatTypeList.filter { it.ischecked }.map(RepeatType::id)[0]
+                newReplySetting.dayList.addAll(checkedDayList)
+                newReplySetting.isOn = true
+            }
+        } catch (e: Exception) {
+            Toast.makeText(activity, "에러가 발생했습니다.", Toast.LENGTH_SHORT).show()
+            Logger.e(e.toString())
         }
 
         Toast.makeText(activity, "저장되었습니다.", Toast.LENGTH_SHORT).show()
         this.init()
 
         viewModelScope.launch {
-            _navigateToReplySettingList.value = true
+            activity.onBackPressed()
         }
     }
 
@@ -364,6 +377,12 @@ class ReplySettingViewModel(
             endLocalTime = LocalTime.of(p1, p2)
             endTimeString.value =
                 ViewConverter.getTime(endLocalTime.hour, endLocalTime.minute)
+
+            endLocalDate = if (endLocalTime.hour == 0) endLocalDate.plusDays(1) else endLocalDate
+            endDateString.value = ViewConverter.dateToString(endLocalDate)
+
+            val baseLocalDate = startLocalDate.plusDays(6)
+            isOverWeek.value = endLocalDate.isAfter(baseLocalDate)      // 일주일 이상일 경우 반복 설정 가능
         }
     }
 }

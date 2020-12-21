@@ -54,8 +54,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center_horizontal"
             android:layout_marginBottom="@dimen/common_margin"
-            android:tint="@color/colorPrimary"
-            app:elevation="20dp" />
+            app:backgroundTint="@color/colorAccent"
+            app:elevation="20dp"
+            app:tint="@color/white"/>
 
         <include
             android:id="@+id/empty_view"

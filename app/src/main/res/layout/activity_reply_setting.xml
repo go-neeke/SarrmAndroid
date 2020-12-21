@@ -122,7 +122,8 @@
                         android:paddingVertical="@dimen/common_margin"
                         android:text="@string/button_text_delete"
                         android:textSize="@dimen/save_button_text_size"
-                        app:strokeColor="@color/colorPrimary"
+                        android:textColor="@color/colorAccent"
+                        app:strokeColor="@color/colorAccent"
                         android:visibility="@{replySettingViewModel.isExistReplySetting ? View.VISIBLE : View.GONE}" />
 
                     <com.google.android.material.button.MaterialButton
@@ -134,7 +135,8 @@
                         android:paddingHorizontal="@dimen/save_button_padding"
                         android:paddingVertical="@dimen/common_margin"
                         android:text="@string/button_text_save"
-                        android:textSize="@dimen/save_button_text_size" />
+                        android:textSize="@dimen/save_button_text_size"
+                        app:backgroundTint="@color/colorAccent"/>
                 </LinearLayout>
             </LinearLayout>
 

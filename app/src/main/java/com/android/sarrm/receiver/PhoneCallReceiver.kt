@@ -11,6 +11,8 @@ import android.telecom.TelecomManager
 import android.telephony.SmsManager
 import android.telephony.TelephonyManager
 import androidx.annotation.RequiresApi
+import com.android.sarrm.data.db.ReplySettingRealmDao
+import com.android.sarrm.data.models.ReplyResult
 import com.android.sarrm.data.models.ReplySetting
 import com.android.sarrm.listener.ITelephony
 import com.android.sarrm.utils.CheckNumberContacts
@@ -46,9 +48,9 @@ class PhoneCallReceiver() : BroadcastReceiver() {
 
             Logger.d("PhoneCallStateListener %s", incomingNumber)
             Realm.getDefaultInstance().use { realm ->
-                realm.where(ReplySetting::class.java).findAll().forEach {
+                realm.where(ReplySetting::class.java).equalTo("isOn", true).findAll().forEach {
                     Logger.d("ReplySetting name %s", it.toString())
-                    checkReplyTarget(context, it, incomingNumber!!)
+                    checkReplyTarget(realm, context, it, incomingNumber!!)
                 }
                 realm.close()
             }
@@ -58,6 +60,7 @@ class PhoneCallReceiver() : BroadcastReceiver() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun checkRepeatType(
+        realm: Realm,
         context: Context,
         replySetting: ReplySetting,
         incomingNumber: String
@@ -94,33 +97,37 @@ class PhoneCallReceiver() : BroadcastReceiver() {
                     3 -> if (dayList.all { it == currentDay }) {
                         Logger.d("특정 요일 지정 current day = %s", currentDay)
                         endCall(
+                            realm,
                             context,
                             incomingNumber,
-                            replySetting.message
+                            replySetting
                         )
                     }
                     2 -> if (currentDay == DayOfWeek.SATURDAY.value || currentDay == DayOfWeek.SUNDAY.value) {
                         Logger.d("주말에만 current day = %s", currentDay)
                         endCall(
+                            realm,
                             context,
                             incomingNumber,
-                            replySetting.message
+                            replySetting
                         )
                     }
                     1 -> if (currentDay in DayOfWeek.MONDAY.value..DayOfWeek.FRIDAY.value) {
                         Logger.d("주중에만 current day = %s", currentDay)
                         endCall(
+                            realm,
                             context,
                             incomingNumber,
-                            replySetting.message
+                            replySetting
                         )
                     }
                     0 -> {
                         Logger.d("매일")
                         endCall(
+                            realm,
                             context,
                             incomingNumber,
-                            replySetting.message
+                            replySetting
                         )
                     }
                 }
@@ -130,6 +137,7 @@ class PhoneCallReceiver() : BroadcastReceiver() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun checkReplyTarget(
+        realm: Realm,
         context: Context,
         replySetting: ReplySetting,
         incomingNumber: String
@@ -141,21 +149,29 @@ class PhoneCallReceiver() : BroadcastReceiver() {
 
         when (replyTarget) {
             2 -> if (incomingNumber?.equals(phoneNumber)) checkRepeatType(
+                realm,
                 context,
                 replySetting,
                 incomingNumber
             )
             1 -> if (CheckNumberContacts.isFromContacts(context, incomingNumber)) checkRepeatType(
+                realm,
                 context,
                 replySetting,
                 incomingNumber
             )
-            else -> checkRepeatType(context, replySetting, incomingNumber)
+            else -> checkRepeatType(realm, context, replySetting, incomingNumber)
         }
     }
 
     @SuppressLint("MissingPermission")
-    private fun endCall(context: Context, number: String?, message: String) {
+    private fun endCall(
+        realm: Realm,
+        context: Context,
+        number: String?,
+        replySetting: ReplySetting
+    ) {
+        val message = replySetting.message
         Logger.d("PhoneCallStateListener endCall")
         if (Build.VERSION.SDK_INT >= 28) {
             val telecomManager =
@@ -188,8 +204,14 @@ class PhoneCallReceiver() : BroadcastReceiver() {
             val sms: SmsManager = SmsManager.getDefault();
             sms.sendTextMessage(number, null, message, sentPI, deliveredPI);
 
+            realm.executeTransaction {
+                val replyResult = realm.createObject(ReplyResult::class.java)
+                replyResult.sendDate = Date()
+                replyResult.phoneNumber = number!!
+                replySetting.replyResult.add(replyResult)
+            }
         } catch (e: Exception) {
-            Logger.d(e.toString())
+            Logger.e(e.toString())
         }
     }
 }

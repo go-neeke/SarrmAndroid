@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.android.sarrm.R
+import com.android.sarrm.data.models.ReplyResult
 import com.android.sarrm.view.factories.ViewModelFactory
 import com.android.sarrm.databinding.FragmentReplyResultBinding
 import com.android.sarrm.view.adapters.ReplyResultListAdapter
@@ -29,7 +30,7 @@ class ReplyResultFragment : Fragment() {
 
     private lateinit var binding: FragmentReplyResultBinding
 
-    private val threadIds = BehaviorRelay.create<String>()
+    private val threadIds = BehaviorRelay.create<Long>()
     private val onDestroys = PublishRelay.create<Any>()
     private val emailThreadPage by lazy { requireView().parent as ExpandablePageLayout }
 
@@ -66,9 +67,9 @@ class ReplyResultFragment : Fragment() {
         }
 
         threadIds
-            .map { replyResultViewModel.findReplyResutBySettingId(replySettingId = it) }
+            .map { it }
             .takeUntil(onDestroys)
-            .onErrorReturnItem(listOf())
+            .onErrorReturnItem(0)
             .subscribe { render(it) }
 
         emailThreadPage.pullToCollapseInterceptor = { downX, downY, upwardPull ->
@@ -102,27 +103,40 @@ class ReplyResultFragment : Fragment() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         if (threadIds.hasValue()) {
-            outState.putString("thread_id", threadIds.value)
+            outState.putLong("thread_id", threadIds.value)
         }
         super.onSaveInstanceState(outState)
     }
 
     private fun onRestoreInstanceState(savedState: Bundle) {
-        val retainedThreadId: String? = savedState.getString("thread_id")
+        val retainedThreadId: Long? = savedState.getLong("thread_id")
         if (retainedThreadId != null) {
             threadIds.accept(retainedThreadId)
         }
     }
 
-    fun populate(threadId: String) {
+    fun populate(threadId: Long) {
         threadIds.accept(threadId)
+        Logger.d("populate %s", threadId)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("SetTextI18n")
-    private fun render(replyResultList: List<String>?) {
+    private fun render(replySettingId: Long) {
         val adapter = ReplyResultListAdapter()
-        adapter.submitList(replyResultList)
-        binding.emptyView.visibility = (if (adapter.itemCount == 0) View.VISIBLE else View.GONE)
+        replyResultViewModel.findReplyResutBySettingId(replySettingId)
+            .observe(viewLifecycleOwner, {
+                it?.let {
+                    adapter.replyResultList = it
+                    binding.emptyView.visibility =
+                        (if (it.isEmpty()) View.VISIBLE else View.GONE)
+
+                    Logger.d("it %s")
+                }
+            })
+
+        Logger.d("replySettingId %d", replySettingId)
+
         binding.emailthreadCollapse.setOnClickListener { requireActivity().onBackPressed() }
         binding.recyclerViewBeer.adapter = adapter
     }

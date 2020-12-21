@@ -80,7 +80,8 @@
                 android:text="@={replySettingViewModel.phoneNumber}"
                 android:textAppearance="@android:style/TextAppearance.Material.Widget.EditText"
                 android:textSize="@dimen/common_text_size"
-                android:visibility="@{replySettingViewModel.isSelectedPhoneNumber ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{replySettingViewModel.isSelectedPhoneNumber ? View.VISIBLE : View.GONE}"
+                android:inputType="number"/>
         </LinearLayout>
     </LinearLayout>
 </layout>

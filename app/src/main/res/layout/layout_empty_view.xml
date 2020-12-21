@@ -9,7 +9,7 @@
     <ImageView
         android:id="@+id/imgLogo"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/main_logo_height"
+        android:layout_height="@dimen/main_margin_top"
         android:src="@drawable/img_logo_sarrm" />
 
     <TextView

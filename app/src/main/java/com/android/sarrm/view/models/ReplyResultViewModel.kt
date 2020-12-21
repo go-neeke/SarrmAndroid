@@ -7,7 +7,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.android.sarrm.data.db.ReplySettingRealmDao
+import com.android.sarrm.data.models.ReplyResult
 import com.android.sarrm.data.models.ReplySetting
+import com.orhanobut.logger.Logger
 import io.realm.Realm
 import io.realm.RealmList
 import java.util.*
@@ -23,13 +25,12 @@ class ReplyResultViewModel(
 
     val realmDao = ReplySettingRealmDao(realm)
 
-    fun findReplyResutBySettingId(replySettingId: String): List<String>? {
+    fun findReplyResutBySettingId(replySettingId: Long): LiveData<MutableList<ReplyResult>> {
         val realmLiveData = realmDao.findReplyResutBySettingId(replySettingId)
 
         // get your live data
-        val allReslutList = Transformations.map(realmLiveData) { realmResult -> realmResult }
+        return Transformations.map(realmLiveData) { realmResult -> realm.copyFromRealm(realmResult) }
 
-        return allReslutList.value
     }
 
 

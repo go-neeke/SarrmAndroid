@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -31,12 +31,12 @@
                 android:id="@+id/text_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
                 android:text="@{replySetting.name}"
                 android:textAppearance="@style/ItemHeaderStyle"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintVertical_bias="0.0"
+                android:ellipsize="end"/>
 
 
             <TextView
@@ -45,6 +45,7 @@
                 android:layout_height="wrap_content"
                 android:text="@{ViewConverter.getReplyTargetStr(replySetting)}"
                 android:textAppearance="@android:style/TextAppearance.Material.Subhead"
+                android:layout_marginVertical="@dimen/common_margin"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/text_name" />
 
@@ -75,10 +76,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_outline_toggle_on_24"
                 android:padding="@dimen/common_margin"
+                android:src="@drawable/ic_baseline_toggle_on_24"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintRight_toLeftOf="parent"
+                app:layout_constraintVertical_bias="0.0"
                 tools:ignore="MissingConstraints" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>

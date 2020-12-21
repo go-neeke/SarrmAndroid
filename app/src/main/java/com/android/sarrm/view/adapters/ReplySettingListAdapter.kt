@@ -1,6 +1,8 @@
 package com.android.sarrm.view.adapters
 
+import android.os.Build
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.android.sarrm.data.models.ReplySetting
@@ -13,8 +15,6 @@ class ReplySettingListAdapter() :
     ListAdapter<ReplySetting, ReplySettingItemViewHolder>(
         ReplySettingDiffCallback()
     ) {
-
-
     lateinit var replySettingListViewModel: ReplySettingListViewModel
     val itemClicks = PublishRelay.create<ReplySettingClicked>()!!
 
@@ -26,11 +26,16 @@ class ReplySettingListAdapter() :
         return ReplySettingItemViewHolder.from(parent)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: ReplySettingItemViewHolder, position: Int) = holder.bind(
         getItem(position),
         itemClicks,
         replySettingListViewModel
     )
+
+    override fun getItemId(position: Int): Long {
+        return getItem(position).id
+    }
 }
 
 class ReplySettingDiffCallback : DiffUtil.ItemCallback<ReplySetting>() {

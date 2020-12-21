@@ -29,9 +29,9 @@ open class ReplySettingItemViewHolder(val binding: ItemReplySettingBinding) :
             }
 
             if (item.isOn) {
-                binding.settingItemToggle.setImageDrawable(binding.root.resources.getDrawable(R.drawable.ic_outline_toggle_off_24))
+                binding.settingItemToggle.setImageDrawable(binding.root.resources.getDrawable(R.drawable.ic_baseline_toggle_on_24))
             } else {
-                binding.settingItemToggle.setImageDrawable(binding.root.resources.getDrawable(R.drawable.ic_outline_toggle_on_24))
+                binding.settingItemToggle.setImageDrawable(binding.root.resources.getDrawable(R.drawable.ic_outline_toggle_off_24))
             }
 
             binding.settingItemToggle.setOnClickListener {

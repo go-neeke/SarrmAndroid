@@ -48,6 +48,7 @@ import com.jakewharton.rxrelay2.PublishRelay
 import me.saket.inboxrecyclerview.animation.ItemExpandAnimator
 import me.saket.inboxrecyclerview.dimming.DimPainter
 import me.saket.inboxrecyclerview.page.SimplePageStateChangeCallbacks
+import kotlin.properties.Delegates
 
 
 class MainActivity : AppCompatActivity() {
@@ -55,7 +56,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mIntent: Intent
     private lateinit var binding: ActivityMainBinding
 
-    private lateinit var replySettingId: String
+    private var replySettingId by Delegates.notNull<Long>()
 
     private val onDestroy = PublishRelay.create<Any>()
     private val adapter = ReplySettingListAdapter()
@@ -90,6 +91,7 @@ class MainActivity : AppCompatActivity() {
     )
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -231,8 +233,9 @@ class MainActivity : AppCompatActivity() {
 
         replySettingListViewModel.allReplySettingList.observeForever {
             it?.let {
+                Logger.d("observeForever")
                 adapter.submitList(it)
-                binding.emptyView.visibility = (if (adapter.itemCount == 0) View.VISIBLE else View.GONE)
+                binding.emptyView.visibility = (if (it.isEmpty()) View.VISIBLE else View.GONE)
             }
         }
 
@@ -246,6 +249,7 @@ class MainActivity : AppCompatActivity() {
             }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("CheckResult")
     private fun setupThreadPage() {
         var replyResultFragment =
@@ -275,9 +279,10 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, ReplySettingActivity::class.java)
 
             if (binding.inboxEmailThreadPage.isExpandedOrExpanding) {
+                onBackPressed()
+
                 intent.putExtra("replySettingId", replySettingId)
                 startActivity(intent)
-                onBackPressed()
             } else {
                 startActivity(intent)
             }
