@@ -3,6 +3,7 @@ package com.android.sarrm.view.holder
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.android.sarrm.R
@@ -30,8 +31,10 @@ open class ReplySettingItemViewHolder(val binding: ItemReplySettingBinding) :
 
             if (item.isOn) {
                 binding.settingItemToggle.setImageDrawable(binding.root.resources.getDrawable(R.drawable.ic_baseline_toggle_on_24))
+                Toast.makeText(binding.root.context, "자동 응답이 활성화되었습니다.", Toast.LENGTH_SHORT).show()
             } else {
                 binding.settingItemToggle.setImageDrawable(binding.root.resources.getDrawable(R.drawable.ic_outline_toggle_off_24))
+                Toast.makeText(binding.root.context, "자동 응답이 비활성화되었습니다.", Toast.LENGTH_SHORT).show()
             }
 
             binding.settingItemToggle.setOnClickListener {
