@@ -277,6 +277,7 @@ class MainActivity : AppCompatActivity() {
             if (binding.inboxEmailThreadPage.isExpandedOrExpanding) {
                 intent.putExtra("replySettingId", replySettingId)
                 startActivity(intent)
+                onBackPressed()
             } else {
                 startActivity(intent)
             }

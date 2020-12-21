@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.android.sarrm.databinding.ListItemBinding
+import com.android.sarrm.databinding.ItemReplyResultBinding
 
 class ReplyResultListAdapter() : ListAdapter<String, ReplyResultListAdapter.ViewHolder>(
     PhoneNumberDiffCallback()
@@ -18,7 +18,7 @@ class ReplyResultListAdapter() : ListAdapter<String, ReplyResultListAdapter.View
         getItem(position),
     )
 
-    class ViewHolder(val binding: ListItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    class ViewHolder(val binding: ItemReplyResultBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: String) {
             with(binding) {
@@ -30,7 +30,7 @@ class ReplyResultListAdapter() : ListAdapter<String, ReplyResultListAdapter.View
         companion object {
             fun from(parent: ViewGroup): ViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = ListItemBinding.inflate(layoutInflater, parent, false)
+                val binding = ItemReplyResultBinding.inflate(layoutInflater, parent, false)
                 return ViewHolder(binding)
             }
         }

@@ -28,14 +28,14 @@ open class ReplySettingItemViewHolder(val binding: ItemReplySettingBinding) :
                 itemClicks.accept(ReplySettingClicked(item, itemId))
             }
 
+            if (item.isOn) {
+                binding.settingItemToggle.setImageDrawable(binding.root.resources.getDrawable(R.drawable.ic_outline_toggle_off_24))
+            } else {
+                binding.settingItemToggle.setImageDrawable(binding.root.resources.getDrawable(R.drawable.ic_outline_toggle_on_24))
+            }
+
             binding.settingItemToggle.setOnClickListener {
-                if (item.isOn) {
-                    binding.settingItemToggle.setImageDrawable(binding.root.resources.getDrawable(R.drawable.ic_outline_toggle_off_24))
-                    replySettingListViewModel.settingToggle(item.id, false)
-                } else {
-                    binding.settingItemToggle.setImageDrawable(binding.root.resources.getDrawable(R.drawable.ic_outline_toggle_on_24))
-                    replySettingListViewModel.settingToggle(item.id, true)
-                }
+                replySettingListViewModel.settingToggle(item.id, !item.isOn)
             }
         }
     }

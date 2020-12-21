@@ -25,6 +25,17 @@
             android:background="#FDFDFD"
             android:paddingBottom="@dimen/common_margin">
 
+            <TextView
+                android:id="@+id/text_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:text="응답 메시지 보낸 내역"
+                android:textAppearance="@style/ItemHeaderStyle"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
+
             <ImageButton
                 android:id="@+id/emailthread_collapse"
                 android:layout_width="wrap_content"
@@ -44,6 +55,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_toLeftOf="@id/emailthread_collapse"
+                android:layout_below="@id/text_name"
                 android:clipToPadding="false"
                 android:nestedScrollingEnabled="true"
                 android:paddingStart="@dimen/common_margin"
@@ -52,14 +64,14 @@
                 android:paddingBottom="?attr/actionBarSize"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                tools:listitem="@layout/list_item" />
+                tools:listitem="@layout/item_reply_result" />
 
-            <TextView
+            <include
                 android:id="@+id/empty_view"
+                layout="@layout/layout_empty_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="데이터가 없습니다."
                 android:visibility="gone" />
         </RelativeLayout>
     </ScrollView>

@@ -5,8 +5,8 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".view.activities.MainActivity"
-        android:padding="@dimen/common_margin">
+        android:padding="@dimen/common_margin"
+        tools:context=".view.activities.MainActivity">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -57,12 +57,12 @@
             android:tint="@color/colorPrimary"
             app:elevation="20dp" />
 
-        <TextView
+        <include
             android:id="@+id/empty_view"
+            layout="@layout/layout_empty_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:text="데이터가 없습니다."
             android:visibility="gone" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
