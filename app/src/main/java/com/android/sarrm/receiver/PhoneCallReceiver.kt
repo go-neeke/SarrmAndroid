@@ -18,6 +18,7 @@ import com.android.sarrm.listener.ITelephony
 import com.android.sarrm.utils.CheckNumberContacts
 import com.orhanobut.logger.Logger
 import io.realm.Realm
+import io.realm.kotlin.where
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
@@ -59,6 +60,62 @@ class PhoneCallReceiver() : BroadcastReceiver() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
+    private fun checkExistReplySetting(
+        realm: Realm,
+        context: Context,
+        replySetting: ReplySetting,
+        currentLocalDate: LocalDate,
+        currentTime: LocalTime,
+        incomingNumber: String
+    ): Boolean {
+        if (replySetting.replyTarget == 2) return false
+
+        val query = realm.where<ReplySetting>()
+        query.equalTo("isOn", true)
+        query.equalTo("repeatType", replySetting.repeatType)
+        val result = query.findAll()
+
+        for (setting in result) {
+            val startLocalDate =
+                LocalDate.of(setting.startYear, setting.startMonth, setting.startDay)
+            val endLocalDate =
+                LocalDate.of(setting.endYear, setting.endMonth, setting.endDay)
+
+            if (currentLocalDate.isAfter(startLocalDate) && currentLocalDate.isBefore(endLocalDate) ||
+                currentLocalDate.isEqual(startLocalDate) || currentLocalDate.isEqual(endLocalDate)
+            ) {
+                val startTime = LocalTime.of(setting.startHour, setting.startMinute)
+                val endTime = LocalTime.of(setting.endHour, setting.endMinute)
+
+                if (currentTime.isAfter(startTime) && currentTime.isBefore(endTime)) {
+                    val currentDay = currentLocalDate.dayOfWeek.value
+
+                    when (setting.repeatType) {
+                        3 -> if (setting.dayList.all { it == currentDay }) {
+                            if (setting.phoneNumber == incomingNumber) return true
+                            return false
+                        }
+                        2 -> if (currentDay == DayOfWeek.SATURDAY.value || currentDay == DayOfWeek.SUNDAY.value) {
+                            if (setting.phoneNumber == incomingNumber) return true
+                            return false
+                        }
+                        1 -> if (currentDay in DayOfWeek.MONDAY.value..DayOfWeek.FRIDAY.value) {
+                            if (setting.phoneNumber == incomingNumber) return true
+                            return false
+                        }
+                        0 -> {
+                            if (setting.phoneNumber == incomingNumber) return true
+                            return false
+                        }
+                    }
+                }
+            }
+        }
+
+        return false
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun checkRepeatType(
         realm: Realm,
         context: Context,
@@ -96,7 +153,15 @@ class PhoneCallReceiver() : BroadcastReceiver() {
                 when (repeatType) {
                     3 -> if (dayList.all { it == currentDay }) {
                         Logger.d("특정 요일 지정 current day = %s", currentDay)
-                        endCall(
+                        if (!checkExistReplySetting(
+                                realm,
+                                context,
+                                replySetting,
+                                currentLocalDate,
+                                currentTime,
+                                incomingNumber
+                            )
+                        ) endCall(
                             realm,
                             context,
                             incomingNumber,
@@ -105,7 +170,15 @@ class PhoneCallReceiver() : BroadcastReceiver() {
                     }
                     2 -> if (currentDay == DayOfWeek.SATURDAY.value || currentDay == DayOfWeek.SUNDAY.value) {
                         Logger.d("주말에만 current day = %s", currentDay)
-                        endCall(
+                        if (!checkExistReplySetting(
+                                realm,
+                                context,
+                                replySetting,
+                                currentLocalDate,
+                                currentTime,
+                                incomingNumber
+                            )
+                        ) endCall(
                             realm,
                             context,
                             incomingNumber,
@@ -114,7 +187,15 @@ class PhoneCallReceiver() : BroadcastReceiver() {
                     }
                     1 -> if (currentDay in DayOfWeek.MONDAY.value..DayOfWeek.FRIDAY.value) {
                         Logger.d("주중에만 current day = %s", currentDay)
-                        endCall(
+                        if (!checkExistReplySetting(
+                                realm,
+                                context,
+                                replySetting,
+                                currentLocalDate,
+                                currentTime,
+                                incomingNumber
+                            )
+                        ) endCall(
                             realm,
                             context,
                             incomingNumber,
@@ -123,7 +204,15 @@ class PhoneCallReceiver() : BroadcastReceiver() {
                     }
                     0 -> {
                         Logger.d("매일")
-                        endCall(
+                        if (!checkExistReplySetting(
+                                realm,
+                                context,
+                                replySetting,
+                                currentLocalDate,
+                                currentTime,
+                                incomingNumber
+                            )
+                        ) endCall(
                             realm,
                             context,
                             incomingNumber,
@@ -148,13 +237,17 @@ class PhoneCallReceiver() : BroadcastReceiver() {
         Logger.d("checkReplyTarget %d", replyTarget)
 
         when (replyTarget) {
-            2 -> if (incomingNumber?.equals(phoneNumber)) checkRepeatType(
+            2 -> if (incomingNumber.equals(phoneNumber)) checkRepeatType(
                 realm,
                 context,
                 replySetting,
                 incomingNumber
             )
-            1 -> if (CheckNumberContacts.isFromContacts(context, incomingNumber)) checkRepeatType(
+            1 -> if (CheckNumberContacts.isFromContacts(
+                    context,
+                    incomingNumber
+                )
+            ) checkRepeatType(
                 realm,
                 context,
                 replySetting,
