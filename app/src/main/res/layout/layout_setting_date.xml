@@ -6,7 +6,9 @@
 
         <variable
             name="replySettingViewModel"
-            type="com.android.sarrm.view.models.ReplySettingViewModel" />
+            type="com.sarrm.android.view.models.ReplySettingViewModel" />
+
+        <import type="com.sarrm.android.utils.AppConstants.PickerType"/>
     </data>
 
 
@@ -14,7 +16,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:layout_weight="1"
         android:orientation="horizontal">
 
         <!-- Start Date -->
@@ -23,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:onClick="@{() -> replySettingViewModel.openDatePicker(1)}"
+            android:onClick="@{() -> replySettingViewModel.openDatePicker(PickerType.START.ordinal())}"
             android:paddingVertical="@dimen/button_padding"
             android:text="@={replySettingViewModel.startDateString}"
             android:textStyle="bold"
@@ -35,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:onClick="@{() -> replySettingViewModel.openDatePicker(2)}"
+            android:onClick="@{() -> replySettingViewModel.openDatePicker(PickerType.END.ordinal())}"
             android:textSize="@dimen/time_text_size"
             android:textStyle="bold"
             android:paddingVertical="@dimen/button_padding"

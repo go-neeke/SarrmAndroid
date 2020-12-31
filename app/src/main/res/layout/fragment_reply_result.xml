@@ -8,12 +8,12 @@
 
         <variable
             name="replyResultViewModel"
-            type="com.android.sarrm.view.models.ReplyResultViewModel" />
+            type="com.sarrm.android.view.models.ReplyResultViewModel" />
 
     </data>
 
     <ScrollView
-        android:id="@+id/emailthread_scrollable_container"
+        android:id="@+id/scrollable_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">
@@ -44,11 +44,11 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginBottom="@dimen/common_margin"
-                        android:text="응답 메시지 보낸 내역"
+                        android:text="@string/title_reply_result"
                         android:textAppearance="@style/ItemHeaderStyle" />
 
                     <ImageButton
-                        android:id="@+id/emailthread_collapse"
+                        android:id="@+id/button_collapse"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
@@ -59,7 +59,7 @@
                 </RelativeLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recycler_view_beer"
+                    android:id="@+id/recyclerview_result_list"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/layout_title"

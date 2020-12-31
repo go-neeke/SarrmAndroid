@@ -1,0 +1,74 @@
+<resources>
+    <string name="app_name">Sarrm</string>
+
+    <string name="permission_not_granted">"Permission not granted"</string>
+
+    <string name="empty_text">"The data is not available."</string>
+
+    <!-- 메뉴 이름 -->
+    <string name="title_menu_name">Setting Name</string>
+    <string name="title_menu_reply_target">Responding to</string>
+    <string name="title_menu_time">Set date and time</string>
+    <string name="title_menu_reply_message">Reply message</string>
+
+    <string name="hint_menu_name">Please enter a setting name</string>
+    <string name="hint_menu_reply_message">Please enter the response message\nIf not entered, it will be sent as the default message.</string>
+    <string name="hint_menu_phoneNumber">Please enter your cell phone number.</string>
+
+    <string name="button_text_delete">Delete</string>
+    <string name="button_text_save">Save</string>
+
+    <string name="title_reply_result">Response message sent history</string>
+
+    <!-- Date Time -->
+    <string name="am">AM %s</string>
+    <string name="pm">PM %s</string>
+    <string name="setDate">Date</string>
+    <string name="setTime">Time</string>
+
+    <!-- Alert -->
+    <string name="alert_message">Are you sure you want to delete the selected settings?</string>
+    <string name="error_message">An error has occurred.</string>
+
+    <string name="set">Set</string>
+    <string name="edit">Edit</string>
+    <string name="save">Save</string>
+    <string name="confirm">Confrim</string>
+    <string name="cancel">Cancel</string>
+
+    <!-- Toast message -->
+    <string name="confirm_message">Successfully deleted</string>
+    <string name="saved_message">Successfully saved</string>
+    <string name="input_name_message">Please enter a setting name</string>
+    <string name="input_phone_number_message">Cell phone input is required when selecting a specific number</string>
+    <string name="check_time_message">Start time cannot exceed end time</string>
+    <string name="set_time_message">Please set it for at least an hour</string>
+    <string name="check_date_message">Start date cannot exceed end date</string>
+    <string name="set_day_message">Please select at least one day of the week</string>
+    <string name="default_sms_message">I\'m not available at the moment. I will contact you later.</string>
+
+    <string-array name="setting_date_array">
+        <item name="monday">Mon</item>
+        <item name="tuesday">Tue</item>
+        <item name="wednesday">Wed</item>
+        <item name="thursday">Thu</item>
+        <item name="friday">Fri</item>
+        <item name="saturday">Sat</item>
+        <item name="sunday">Sun</item>
+    </string-array>
+
+    <!-- 응답 대상 -->
+    <string-array name="reply_target_array">
+        <item>On every phone calls</item>
+        <item>Only my contacts</item>
+        <item>Only specific number</item>
+    </string-array>
+
+    <!-- 반복 설정 -->
+    <string-array name="repeat_type_array">
+        <item>Every day</item>
+        <item>Only during the week</item>
+        <item>Only on weekends</item>
+        <item>Specific day of the week</item>
+    </string-array>
+</resources>

@@ -13,7 +13,7 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/builetTitle"
+            android:id="@+id/image_bullet"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/bullet"
@@ -23,7 +23,6 @@
 
         <!-- 타이틀 -->
         <TextView
-            android:id="@+id/textMenuTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/common_margin"
@@ -31,7 +30,7 @@
             android:textSize="@dimen/common_text_size"
             android:textAppearance="@android:style/TextAppearance.Material.Subhead"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toRightOf="@id/builetTitle"
+            app:layout_constraintLeft_toRightOf="@id/image_bullet"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

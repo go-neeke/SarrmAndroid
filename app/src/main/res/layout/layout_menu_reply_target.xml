@@ -13,7 +13,7 @@
 
         <variable
             name="replySettingViewModel"
-            type="com.android.sarrm.view.models.ReplySettingViewModel" />
+            type="com.sarrm.android.view.models.ReplySettingViewModel" />
     </data>
 
 
@@ -30,14 +30,12 @@
             android:paddingVertical="@dimen/common_margin">
             <!-- 타이틀 -->
             <include
-                android:id="@+id/layoutTitle"
                 layout="@layout/layout_menu_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:titleName="@{titleName}" />
 
             <include
-                android:id="@+id/layoutBorder"
                 layout="@layout/layout_border"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -56,7 +54,7 @@
                 android:background="@drawable/round_outline">
 
                 <Spinner
-                    android:id="@+id/spinnerReplyTarget"
+                    android:id="@+id/spinner_reply_target"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:entries="@array/reply_target_array"

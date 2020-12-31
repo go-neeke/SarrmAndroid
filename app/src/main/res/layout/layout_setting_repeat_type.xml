@@ -8,7 +8,7 @@
 
         <variable
             name="replySettingViewModel"
-            type="com.android.sarrm.view.models.ReplySettingViewModel" />
+            type="com.sarrm.android.view.models.ReplySettingViewModel" />
     </data>
 
     <LinearLayout
@@ -28,6 +28,7 @@
             app:onSelectedSpecificDayListener="@{replySettingViewModel.onSelectedSpecificDayListener}"
             app:radioList="@{replySettingViewModel.repeatTypeList}" />
 
+        <!-- 요일 설정 -->
         <com.google.android.material.chip.ChipGroup
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

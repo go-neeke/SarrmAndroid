@@ -18,16 +18,34 @@
     <string name="button_text_delete">삭 제</string>
     <string name="button_text_save">저 장</string>
 
+    <string name="title_reply_result">응답 메시지 보낸 내역</string>
+
     <!-- Date Time -->
+    <string name="am">오전 %s</string>
+    <string name="pm">오후 %s</string>
     <string name="setDate">날짜</string>
     <string name="setTime">시간</string>
+
+    <!-- Alert -->
+    <string name="alert_message">선택된 응답 설정을 삭제하시겠습니까?</string>
+    <string name="error_message">에러가 발생했습니다.</string>
+
     <string name="set">설정</string>
     <string name="edit">수정</string>
     <string name="save">저장</string>
+    <string name="confirm">확인</string>
     <string name="cancel">취소</string>
-    <string name="daily">매일</string>
-    <string name="only_weekday">주중에만</string>
-    <string name="only_weekend">주말에만</string>
+
+    <!-- Toast message -->
+    <string name="confirm_message">삭제되었습니다.</string>
+    <string name="saved_message">저장되었습니다.</string>
+    <string name="input_name_message">설정할 이름을 입력해주세요.</string>
+    <string name="input_phone_number_message">특정 번호 지정시 핸드폰 입력은 필수입니다.</string>
+    <string name="check_time_message">시작시간이 종료시간을 초과할 수 없습니다.</string>
+    <string name="set_time_message">최소 설정가능한 시간은 1시간입니다.</string>
+    <string name="check_date_message">시작날짜가 종료날짜를 초과할 수 없습니다.</string>
+    <string name="set_day_message">하나 이상의 요일을 지정해주세요.</string>
+    <string name="default_sms_message">지금은 전화를 받을 수 없습니다. 나중에 연락드리겠습니다.</string>
 
     <string-array name="setting_date_array">
         <item name="monday">월</item>
@@ -53,10 +71,5 @@
         <item>주말에만</item>
         <item>특정 요일 지정</item>
     </string-array>
-
-    <item name="daily" type="id" format="string"/>
-    <item name="only_weekday" type="id" format="string"/>
-    <item name="only_weekend" type="id" format="string"/>
-
 
 </resources>

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
+        <import type="com.sarrm.android.utils.AppConstants.PickerType"/>
 
         <variable
             name="replySettingViewModel"
-            type="com.android.sarrm.view.models.ReplySettingViewModel" />
+            type="com.sarrm.android.view.models.ReplySettingViewModel" />
     </data>
 
 
@@ -14,7 +14,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:layout_weight="1"
         android:orientation="horizontal">
 
         <!-- Start Date -->
@@ -23,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:onClick="@{() -> replySettingViewModel.openTimePicker(1)}"
+            android:onClick="@{() -> replySettingViewModel.openTimePicker(PickerType.START.ordinal())}"
             android:textSize="@dimen/time_text_size"
             android:paddingVertical="@dimen/button_padding"
             android:text="@={replySettingViewModel.startTimeString}"
@@ -36,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textStyle="bold"
-            android:onClick="@{() -> replySettingViewModel.openTimePicker(2)}"
+            android:onClick="@{() -> replySettingViewModel.openTimePicker(PickerType.END.ordinal())}"
             android:textSize="@dimen/time_text_size"
             android:paddingVertical="@dimen/button_padding"
             android:text="@={replySettingViewModel.endTimeString}" />

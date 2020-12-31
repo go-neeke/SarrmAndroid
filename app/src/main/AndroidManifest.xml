@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.android.sarrm">
+    package="com.sarrm.android">
 
     <uses-permission android:name="android.permission.READ_CALL_LOG"/>
     <uses-permission android:name="android.permission.ANSWER_PHONE_CALLS" />
@@ -16,7 +16,7 @@
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
 
     <application
-        android:name=".application.SarrmApplication"
+        android:name="com.sarrm.android.application.SarrmApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -24,7 +24,7 @@
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".view.activities.SplashActivity"
+        <activity android:name="com.sarrm.android.view.activities.SplashActivity"
             android:noHistory="true"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -33,16 +33,16 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".view.activities.MainActivity"
+        <activity android:name="com.sarrm.android.view.activities.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"/>
 
-        <activity android:name=".view.activities.ReplySettingActivity"
+        <activity android:name="com.sarrm.android.view.activities.ReplySettingActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"/>
 
         <receiver
-            android:name=".receiver.BootCompletedReceiver"
+            android:name="com.sarrm.android.receiver.BootCompletedReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter android:priority="999">
@@ -52,13 +52,13 @@
         </receiver>
 
         <receiver
-            android:name=".receiver.AlarmReceiver"
+            android:name="com.sarrm.android.receiver.AlarmReceiver"
             android:enabled="true"
             android:exported="true">
         </receiver>
 
         <receiver
-            android:name=".receiver.PhoneCallReceiver"
+            android:name="com.sarrm.android.receiver.PhoneCallReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>

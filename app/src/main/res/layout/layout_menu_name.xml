@@ -8,7 +8,7 @@
             type="String" />
         <variable
             name="replySettingViewModel"
-            type="com.android.sarrm.view.models.ReplySettingViewModel" />
+            type="com.sarrm.android.view.models.ReplySettingViewModel" />
     </data>
 
     <LinearLayout
@@ -19,14 +19,12 @@
 
         <!-- 타이틀 -->
         <include
-            android:id="@+id/layoutTitle"
             layout="@layout/layout_menu_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:titleName="@{titleName}" />
 
         <include
-            android:id="@+id/layoutBorder"
             layout="@layout/layout_border"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

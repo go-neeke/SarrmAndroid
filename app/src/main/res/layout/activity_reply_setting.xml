@@ -24,7 +24,7 @@
 
         <variable
             name="replySettingViewModel"
-            type="com.android.sarrm.view.models.ReplySettingViewModel" />
+            type="com.sarrm.android.view.models.ReplySettingViewModel" />
     </data>
 
 
@@ -37,7 +37,7 @@
 
         <!-- 로고 -->
         <ImageView
-            android:id="@+id/textLogo"
+            android:id="@+id/text_logo"
             android:layout_width="@dimen/top_logo_width"
             android:layout_height="@dimen/top_logo_height"
             android:src="@drawable/text_logo_sarrm"
@@ -46,12 +46,12 @@
 
         <!-- 로고 description -->
         <ImageView
-            android:id="@+id/textDescription"
+            android:id="@+id/text_description"
             android:layout_width="@dimen/top_logo_desc_width"
             android:layout_height="@dimen/top_logo_desc_height"
             android:src="@drawable/description_sarrm"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textLogo" />
+            app:layout_constraintTop_toBottomOf="@id/text_logo" />
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
@@ -59,7 +59,7 @@
             android:layout_marginTop="@dimen/main_margin_top"
             android:fillViewport="true"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textDescription">
+            app:layout_constraintTop_toBottomOf="@id/text_description">
 
             <!-- 메뉴들 -->
             <LinearLayout

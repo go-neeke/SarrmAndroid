@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/replySettingListFragment"
-        android:name="com.android.sarrm.view.fragments.ReplySettingListFragment"
+        android:name="com.sarrm.android.view.fragments.ReplySettingListFragment"
         android:label="Reply Setting List"
         tools:layout="@layout/fragment_reply_setting_list">
         <action
@@ -21,7 +21,7 @@
 
     <fragment
         android:id="@+id/replySettingFragment"
-        android:name="com.android.sarrm.view.fragments.ReplySettingFragment"
+        android:name="com.sarrm.android.view.fragments.ReplySettingFragment"
         android:label="ReplySetting"
         tools:layout="@layout/activity_reply_setting">
         <action

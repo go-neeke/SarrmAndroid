@@ -14,24 +14,19 @@
             android:orientation="vertical">
             <!-- 로고 -->
             <ImageView
-                android:id="@+id/textLogo"
                 android:layout_width="@dimen/top_logo_width"
                 android:layout_height="@dimen/top_logo_height"
-                android:src="@drawable/text_logo_sarrm"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:src="@drawable/text_logo_sarrm" />
 
             <!-- 로고 description -->
             <ImageView
                 android:id="@+id/textDescription"
                 android:layout_width="@dimen/top_logo_desc_width"
                 android:layout_height="@dimen/top_logo_desc_height"
-                android:src="@drawable/description_sarrm"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textLogo" />
+                android:src="@drawable/description_sarrm" />
 
             <me.saket.inboxrecyclerview.InboxRecyclerView
-                android:id="@+id/inbox_recyclerview"
+                android:id="@+id/recyclerview_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
@@ -42,14 +37,14 @@
         </LinearLayout>
 
         <me.saket.inboxrecyclerview.page.ExpandablePageLayout
-            android:id="@+id/inbox_email_thread_page"
+            android:id="@+id/expandable_result_page"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/white"
             android:elevation="20dp" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/inbox_fab"
+            android:id="@+id/button_floating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center_horizontal"

@@ -5,7 +5,7 @@
 
         <variable
             name="replyResult"
-            type="com.android.sarrm.data.models.ReplyResult" />
+            type="com.sarrm.android.data.realm.ReplyResult" />
 
     </data>
 
