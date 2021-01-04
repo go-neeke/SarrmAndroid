@@ -67,22 +67,30 @@ class MainActivity : AppCompatActivity() {
     val PERMISSION_REQ_CODE = 1234
     val PERMISSIONS_PHONE_BEFORE_P = arrayOf(
         Manifest.permission.READ_PHONE_STATE,
-        Manifest.permission.CALL_PHONE,
+        Manifest.permission.PROCESS_OUTGOING_CALLS,
         Manifest.permission.READ_CALL_LOG,
+        Manifest.permission.WRITE_CALL_LOG,
         Manifest.permission.READ_CONTACTS,
-        Manifest.permission.RECEIVE_SMS,
         Manifest.permission.SEND_SMS,
+        Manifest.permission.READ_SMS,
+        Manifest.permission.RECEIVE_SMS,
+        Manifest.permission.RECEIVE_MMS,
+        Manifest.permission.RECEIVE_WAP_PUSH,
         Manifest.permission.SYSTEM_ALERT_WINDOW
     )
     val PERMISSIONS_AFTER_P = arrayOf(
         Manifest.permission.ANSWER_PHONE_CALLS,
         Manifest.permission.READ_PHONE_STATE,
         Manifest.permission.READ_CALL_LOG,
-        Manifest.permission.CALL_PHONE,
+        Manifest.permission.READ_SMS,
+        Manifest.permission.PROCESS_OUTGOING_CALLS,
         Manifest.permission.READ_CONTACTS,
+        Manifest.permission.WRITE_CALL_LOG,
         Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-        Manifest.permission.RECEIVE_SMS,
         Manifest.permission.SEND_SMS,
+        Manifest.permission.RECEIVE_SMS,
+        Manifest.permission.RECEIVE_MMS,
+        Manifest.permission.RECEIVE_WAP_PUSH,
         Manifest.permission.SYSTEM_ALERT_WINDOW
     )
 
@@ -120,10 +128,10 @@ class MainActivity : AppCompatActivity() {
 
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Build.VERSION.SDK_INT <= Build.VERSION_CODES.O_MR1) {
             if (checkSelfPermission(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_DENIED
-                || checkSelfPermission(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_DENIED
+                || checkSelfPermission(Manifest.permission.PROCESS_OUTGOING_CALLS) == PackageManager.PERMISSION_DENIED
                 || checkSelfPermission(Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_DENIED
                 || checkSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_DENIED
-                || checkSelfPermission(Manifest.permission.READ_SMS) == PackageManager.PERMISSION_DENIED
+                || checkSelfPermission(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_DENIED
                 || checkSelfPermission(Manifest.permission.SYSTEM_ALERT_WINDOW) == PackageManager.PERMISSION_DENIED
             )
                 requestPermissions(PERMISSIONS_PHONE_BEFORE_P, PERMISSION_REQ_CODE)
@@ -133,10 +141,9 @@ class MainActivity : AppCompatActivity() {
             if (checkSelfPermission(Manifest.permission.ANSWER_PHONE_CALLS) == PackageManager.PERMISSION_DENIED
                 || checkSelfPermission(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_DENIED
                 || checkSelfPermission(Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_DENIED
-                || checkSelfPermission(Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_DENIED
+                || checkSelfPermission(Manifest.permission.PROCESS_OUTGOING_CALLS) == PackageManager.PERMISSION_DENIED
                 || checkSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_DENIED
-                || checkSelfPermission(Manifest.permission.READ_SMS) == PackageManager.PERMISSION_DENIED
-                || checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_DENIED
+                || checkSelfPermission(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_DENIED
                 || checkSelfPermission(Manifest.permission.SYSTEM_ALERT_WINDOW) == PackageManager.PERMISSION_DENIED
             )
                 requestPermissions(PERMISSIONS_AFTER_P, PERMISSION_REQ_CODE)
