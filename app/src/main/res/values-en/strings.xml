@@ -30,6 +30,16 @@
     <string name="alert_message">Are you sure you want to delete the selected settings?</string>
     <string name="error_message">An error has occurred.</string>
 
+    <!-- Permission Alert -->
+    <string name="read_call_log_alert_title">Enable read call log</string>
+    <string name="read_call_log_alert_message">Do you want to allow read call logs to block incoming calls at the time and destination you set?</string>
+    <string name="send_sms_alert_title">Enable send sms</string>
+    <string name="send_sms_alert_message">Do you want to allow SMS to be sent to the person who blocked the call?</string>
+    <string name="read_contacts_alert_title">Enable read contacts</string>
+    <string name="read_contacts_alert_message">Do you want to allow access to your address book to determine whether it is a blocked destination?</string>
+    <string name="permission_grant_alert_title">Allow access</string>
+    <string name="permission_grant_alert_message">Unable to add new settings. Do you want to allow access to calls, SMS and address book for smooth use Sarrm?</string>
+
     <string name="set">Set</string>
     <string name="edit">Edit</string>
     <string name="save">Save</string>

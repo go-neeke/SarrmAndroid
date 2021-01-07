@@ -257,16 +257,21 @@ class PhoneCallReceiver() : BroadcastReceiver() {
     ) {
         val message = replySetting.message
 
-        if (Build.VERSION.SDK_INT >= 28) {
-            val telecomManager =
-                context?.getSystemService(Context.TELECOM_SERVICE) as TelecomManager
-            telecomManager.endCall()
-        } else {
-            val tm = context?.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-            val iTelephony = tm.javaClass.getDeclaredMethod("getITelephony")
-            iTelephony.isAccessible = true
-            val telephonyService = iTelephony.invoke(tm) as ITelephony
-            telephonyService.endCall()
+        try {
+            if (Build.VERSION.SDK_INT >= 28) {
+                val telecomManager =
+                    context?.getSystemService(Context.TELECOM_SERVICE) as TelecomManager
+                telecomManager.endCall()
+            } else {
+                val tm = context?.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+                val iTelephony = tm.javaClass.getDeclaredMethod("getITelephony")
+                iTelephony.isAccessible = true
+                val telephonyService = iTelephony.invoke(tm) as ITelephony
+                telephonyService.endCall()
+            }
+
+        } catch (e:Exception) {
+            Logger.e(e.toString())
         }
 
         try {

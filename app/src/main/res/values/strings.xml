@@ -30,6 +30,16 @@
     <string name="alert_message">선택된 응답 설정을 삭제하시겠습니까?</string>
     <string name="error_message">에러가 발생했습니다.</string>
 
+    <!-- Permission Alert -->
+    <string name="read_call_log_alert_title">통화 기록 읽기 가능</string>
+    <string name="read_call_log_alert_message">설정한 시간, 대상에 대해 통화 수신 차단을 위해 통화 기록 읽기를 허용하시겠습니까?</string>
+    <string name="send_sms_alert_title">문자 전송 가능</string>
+    <string name="send_sms_alert_message">통화 수신 차단한 대상에게 SMS 전송을 허용하시겠습니까?</string>
+    <string name="read_contacts_alert_title">주소록 읽기 가능</string>
+    <string name="read_contacts_alert_message">수신 차단 대상인지 여부를 확인하기 위해 주소록 접근을 허용하시겠습니까?</string>
+    <string name="permission_grant_alert_title">접근 권한 허용</string>
+    <string name="permission_grant_alert_message">새로운 설정을 추가할 수 없습니다. 원활한 Sarrm앱 사용을 위해 통화, SMS, 주소록 접근 권한 허용하시겠습니까?</string>
+
     <string name="set">설정</string>
     <string name="edit">수정</string>
     <string name="save">저장</string>

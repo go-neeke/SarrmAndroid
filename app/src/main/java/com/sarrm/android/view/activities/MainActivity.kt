@@ -12,38 +12,41 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.view.View
-import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
-import com.sarrm.android.R
-import com.sarrm.android.databinding.*
-import com.sarrm.android.utils.AppConstants
-import com.orhanobut.logger.Logger
-import kotlinx.android.synthetic.main.layout_menu_reply_target.*
-import java.util.*
 import android.util.TypedValue
+import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.jakewharton.rxrelay2.PublishRelay
+import com.orhanobut.logger.Logger
+import com.sarrm.android.R
+import com.sarrm.android.databinding.*
+import com.sarrm.android.receiver.PhoneCallReceiver
+import com.sarrm.android.utils.AppConstants
 import com.sarrm.android.view.adapters.ReplySettingListAdapter
 import com.sarrm.android.view.factories.ViewModelFactory
 import com.sarrm.android.view.fragments.ReplyResultFragment
 import com.sarrm.android.view.models.ReplySettingListViewModel
-import com.jakewharton.rxrelay2.PublishRelay
-import com.sarrm.android.receiver.PhoneCallReceiver
+import kotlinx.android.synthetic.main.layout_menu_reply_target.*
 import me.saket.inboxrecyclerview.animation.ItemExpandAnimator
 import me.saket.inboxrecyclerview.dimming.DimPainter
 import me.saket.inboxrecyclerview.page.SimplePageStateChangeCallbacks
+import java.util.*
 import kotlin.properties.Delegates
 
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+
+    private var phoneCallReceiver = PhoneCallReceiver()
 
     private var replySettingId by Delegates.notNull<Long>()
 
@@ -66,34 +69,15 @@ class MainActivity : AppCompatActivity() {
 
     val PERMISSION_REQ_CODE = 1234
     val PERMISSIONS_PHONE_BEFORE_P = arrayOf(
-        Manifest.permission.READ_PHONE_STATE,
-        Manifest.permission.PROCESS_OUTGOING_CALLS,
         Manifest.permission.READ_CALL_LOG,
-        Manifest.permission.WRITE_CALL_LOG,
+        Manifest.permission.READ_PHONE_STATE,
         Manifest.permission.READ_CONTACTS,
         Manifest.permission.SEND_SMS,
-        Manifest.permission.READ_SMS,
-        Manifest.permission.RECEIVE_SMS,
-        Manifest.permission.RECEIVE_MMS,
-        Manifest.permission.RECEIVE_WAP_PUSH,
-        Manifest.permission.SYSTEM_ALERT_WINDOW
-    )
-    val PERMISSIONS_AFTER_P = arrayOf(
-        Manifest.permission.ANSWER_PHONE_CALLS,
-        Manifest.permission.READ_PHONE_STATE,
-        Manifest.permission.READ_CALL_LOG,
-        Manifest.permission.READ_SMS,
-        Manifest.permission.PROCESS_OUTGOING_CALLS,
-        Manifest.permission.READ_CONTACTS,
-        Manifest.permission.WRITE_CALL_LOG,
-        Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-        Manifest.permission.SEND_SMS,
-        Manifest.permission.RECEIVE_SMS,
-        Manifest.permission.RECEIVE_MMS,
-        Manifest.permission.RECEIVE_WAP_PUSH,
-        Manifest.permission.SYSTEM_ALERT_WINDOW
+        Manifest.permission.SYSTEM_ALERT_WINDOW,
+        Manifest.permission.ANSWER_PHONE_CALLS
     )
 
+    private var permissionDenied = false
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -125,32 +109,44 @@ class MainActivity : AppCompatActivity() {
     private fun checkPermissions() {
         Logger.d("checkPermissions")
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Build.VERSION.SDK_INT <= Build.VERSION_CODES.O_MR1) {
-            if (checkSelfPermission(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_DENIED
-                || checkSelfPermission(Manifest.permission.PROCESS_OUTGOING_CALLS) == PackageManager.PERMISSION_DENIED
-                || checkSelfPermission(Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_DENIED
-                || checkSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_DENIED
-                || checkSelfPermission(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_DENIED
-                || checkSelfPermission(Manifest.permission.SYSTEM_ALERT_WINDOW) == PackageManager.PERMISSION_DENIED
-            )
+            registerPhonecallReceiver()
+        } else {
+            if (checkSelfPermission(Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_DENIED)
+                showReadCallLogPermissionAlert(AppConstants.PermissionType.READ_CALL_LOG)
+            else if (checkSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_DENIED)
+                showReadCallLogPermissionAlert(AppConstants.PermissionType.READ_CONTACTS)
+            else if (checkSelfPermission(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_DENIED)
+                showReadCallLogPermissionAlert(AppConstants.PermissionType.SEND_SMS)
+            else if (checkSelfPermission(Manifest.permission.SYSTEM_ALERT_WINDOW) == PackageManager.PERMISSION_DENIED)
                 requestPermissions(PERMISSIONS_PHONE_BEFORE_P, PERMISSION_REQ_CODE)
             else if (!Settings.canDrawOverlays(this))
                 checkDrawOverlayPermission()
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Build.VERSION.SDK_INT > Build.VERSION_CODES.O_MR1) {
-            if (checkSelfPermission(Manifest.permission.ANSWER_PHONE_CALLS) == PackageManager.PERMISSION_DENIED
-                || checkSelfPermission(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_DENIED
-                || checkSelfPermission(Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_DENIED
-                || checkSelfPermission(Manifest.permission.PROCESS_OUTGOING_CALLS) == PackageManager.PERMISSION_DENIED
-                || checkSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_DENIED
-                || checkSelfPermission(Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_DENIED
-                || checkSelfPermission(Manifest.permission.SYSTEM_ALERT_WINDOW) == PackageManager.PERMISSION_DENIED
-            )
-                requestPermissions(PERMISSIONS_AFTER_P, PERMISSION_REQ_CODE)
-            else if (!Settings.canDrawOverlays(this))
-                checkDrawOverlayPermission()
-
+            else registerPhonecallReceiver()
         }
+    }
+
+    private fun showReadCallLogPermissionAlert(permissionType: AppConstants.PermissionType) {
+        showAlert(
+            this,
+            permissionType.permissionAlertTitle(this),
+            permissionType.permissionAlertMessage(this),
+            object : AlertCallbackListener {
+                override fun onClickPositive() {
+                    ActivityCompat.requestPermissions(
+                        this@MainActivity, permissionType.permission(),
+                        permissionType.permissionRequestCode()
+                    )
+                }
+
+                override fun onClickNegative() {
+                    Toast.makeText(
+                        this@MainActivity,
+                        getString(R.string.permission_not_granted),
+                        Toast.LENGTH_SHORT
+                    ).show();
+                    permissionDenied = true
+                }
+            })
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -159,12 +155,18 @@ class MainActivity : AppCompatActivity() {
             Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
             Uri.parse("package:$packageName")
         )
-        startActivityForResult(intent, 12345)
+        startActivityForResult(intent, PERMISSION_REQ_CODE)
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == PERMISSION_REQ_CODE) {
+            if (Settings.canDrawOverlays(this)) {
+                registerPhonecallReceiver()
+            }
+        }
     }
 
     override fun onRequestPermissionsResult(
@@ -184,18 +186,47 @@ class MainActivity : AppCompatActivity() {
                                 Settings.canDrawOverlays(this)
                             )
                             checkDrawOverlayPermission()
+                        } else {
+                            registerPhonecallReceiver()
                         }
-
                 } else {
-                    Toast.makeText(this, getString(R.string.permission_not_granted), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(
+                        this,
+                        getString(R.string.permission_not_granted),
+                        Toast.LENGTH_SHORT
+                    ).show();
+                    permissionDenied = true
                 }
-
+            }
+            1000,
+            1001,
+            1002,
+            1003 -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    checkPermissions()
+                } else {
+                    Toast.makeText(
+                        this,
+                        getString(R.string.permission_not_granted),
+                        Toast.LENGTH_SHORT
+                    ).show();
+                    permissionDenied = true
+                }
             }
         }
     }
 
+    private fun registerPhonecallReceiver() {
+        permissionDenied = false
+        Logger.d("registerPhonecallReceiver")
+        val filter = IntentFilter()
+        filter.addAction("android.intent.action.PHONE_STATE")
+        registerReceiver(phoneCallReceiver, filter)
+    }
+
     override fun onDestroy() {
         onDestroy.accept(Any())
+        unregisterReceiver(phoneCallReceiver);
         super.onDestroy()
     }
 
@@ -234,7 +265,7 @@ class MainActivity : AppCompatActivity() {
                 adapter.notifyDataSetChanged()
             }
         }
-        
+
         // use library
         binding.recyclerviewList.layoutManager = LinearLayoutManager(this)
         binding.recyclerviewList.expandablePage = binding.expandableResultPage
@@ -297,26 +328,24 @@ class MainActivity : AppCompatActivity() {
         binding.buttonFloating.setOnClickListener {
             if (currentMode.value == AppConstants.ListMode.SELECTION) {
                 // 삭제 버튼 클릭시
-                val builder = AlertDialog.Builder(this@MainActivity)
-                builder.setMessage(getString(R.string.alert_message))
-                    .setCancelable(false)
-                    .setPositiveButton(getString(R.string.confirm)) { dialog, id ->
-                        // Delete selected note from database
-                        replySettingListViewModel.deleteReplySettingList(selectionList.value!!)
-                        initSelection()
-                        Toast.makeText(
-                            this,
-                            getString(R.string.confirm_message),
-                            Toast.LENGTH_SHORT
-                        ).show()
+                showAlert(
+                    this,
+                    "",
+                    getString(R.string.alert_message),
+                    object : AlertCallbackListener {
+                        override fun onClickPositive() {
+                            replySettingListViewModel.deleteReplySettingList(selectionList.value!!)
+                            initSelection()
+                            Toast.makeText(
+                                this@MainActivity,
+                                getString(R.string.confirm_message),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
 
-                    }
-                    .setNegativeButton(getString(R.string.cancel)) { dialog, id ->
-                        // Dismiss the dialog
-                        dialog.dismiss()
-                    }
-                val alert = builder.create()
-                alert.show()
+                        override fun onClickNegative() {
+                        }
+                    })
             } else {
                 val intent = Intent(this, ReplySettingActivity::class.java)
                 if (binding.expandableResultPage.isExpandedOrExpanding) {
@@ -325,12 +354,33 @@ class MainActivity : AppCompatActivity() {
                     intent.putExtra("replySettingId", replySettingId)
                     startActivity(intent)
                 } else {
-                    // list에서 클릭시
-                    startActivity(intent)
+                    if (permissionDenied) {
+                        showAlert(
+                            this,
+                            getString(R.string.permission_grant_alert_title),
+                            getString(R.string.permission_grant_alert_message),
+                            object : AlertCallbackListener {
+                                override fun onClickPositive() {
+                                    checkPermissions()
+                                }
+
+                                override fun onClickNegative() {
+                                    Toast.makeText(
+                                        this@MainActivity,
+                                        getString(R.string.permission_not_granted),
+                                        Toast.LENGTH_SHORT
+                                    ).show();
+                                    permissionDenied = true
+                                }
+                            })
+                    } else {
+                        // list에서 클릭시
+                        startActivity(intent)
+                    }
                 }
             }
         }
-        
+
         binding.expandableResultPage.addStateChangeCallbacks(object :
             SimplePageStateChangeCallbacks() {
             override fun onPageAboutToExpand(expandAnimDuration: Long) {
@@ -350,7 +400,7 @@ class MainActivity : AppCompatActivity() {
     private fun initSelection() {
         binding.buttonFloating.startAnimation(antiClockRotate)
         binding.buttonFloating.setImageDrawable(resources.getDrawable(R.drawable.ic_add_24))
-        
+
         // 삭제 취소했을 때 > 초기화
         var tempList = selectionList.value
         tempList!!.clear()
@@ -366,4 +416,33 @@ private fun <T : Any?> MutableLiveData<T>.default(initialValue: T) =
 private fun Context.dp(value: Int): Int {
     val metrics = resources.displayMetrics
     return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, value.toFloat(), metrics).toInt()
+}
+
+private fun showAlert(
+    context: Context,
+    title: String,
+    message: String,
+    alertCallbackListener: AlertCallbackListener
+) {
+    val alertBuilder = AlertDialog.Builder(context)
+    alertBuilder.setCancelable(true)
+    alertBuilder.setTitle(title)
+    alertBuilder.setMessage(message)
+    alertBuilder.setPositiveButton(
+        android.R.string.yes
+    ) { dialog, which ->
+        alertCallbackListener.onClickPositive()
+    }
+    alertBuilder.setNegativeButton(
+        android.R.string.no
+    ) { dialog, which ->
+        alertCallbackListener.onClickNegative()
+    }
+    val alert = alertBuilder.create()
+    alert.show()
+}
+
+private interface AlertCallbackListener {
+    fun onClickPositive()
+    fun onClickNegative()
 }
